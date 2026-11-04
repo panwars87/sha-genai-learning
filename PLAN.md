@@ -1,7 +1,7 @@
 # GenAI Fundamentals — Learning Plan
 
 **Product we build:** **DocuMind**, an Intelligent Document Processing (IDP) app.
-You upload a document (invoice, receipt, contract, bank statement); an **agent** classifies it, extracts fields, checks them, files it away, and lets you **chat with all your documents**.
+**Scope: invoices and receipts.** You upload one (PDF or phone photo); an **agent** classifies it, extracts fields, checks them, files it away, and lets you **chat with all your documents**.
 
 **Approach:** concepts first, code second. Each phase = one concept, one small feature, one "break it" experiment. A coding agent writes the code; you own the *why*.
 
@@ -46,7 +46,7 @@ You upload a document (invoice, receipt, contract, bank statement); an **agent**
 | Tracing / evals | Langfuse (self-hosted or cloud) | Open source; plugs into LiteLLM, LangChain, LangGraph |
 | Agents | LangChain + LangGraph | As requested |
 | Tools | MCP (Python SDK) | The standard for tool calling across clients |
-| Test docs | Synthetic/public invoices, receipts, contracts | **Never real JPMC or personal data** |
+| Test docs | Synthetic invoices + public receipt datasets (e.g., SROIE, CORD) | **Never real JPMC or personal data** |
 
 > Tool versions and APIs move fast — at each phase we verify current docs before building.
 
@@ -66,9 +66,11 @@ Each phase: **Concept (ELI10)** → **Build** → **Break-it experiment** → **
 ### Phase 1 — Prompt engineering + structured output
 - **ELI10:** A prompt is instructions to a very smart new intern. Clear instructions + examples = good work. Asking for a form (JSON) instead of an essay = usable work.
 - **Concepts:** system prompt, roles, few-shot examples, XML tags, JSON schema / structured outputs, hallucination.
-- **Build:** `documind extract invoice.pdf` → `{vendor, invoice_no, date, total, line_items[]}`.
+- **Build:** `documind extract <file>` → two schemas:
+  - Invoice: `{vendor, invoice_no, invoice_date, due_date, subtotal, tax, total, currency, line_items[]}`
+  - Receipt: `{merchant, date, subtotal, tax, tip, total, payment_method, items[]}`
 - **Break it:** remove examples; feed a receipt to the invoice prompt; watch it invent fields.
-- **Start the golden set:** 10 docs with hand-written correct answers (used in Phase 9).
+- **Start the golden set:** 10 docs (clean PDF invoices, crumpled phone-photo receipts) with hand-written correct answers (used in Phase 9).
 - **Checkpoint:** Difference between asking nicely and constraining with a schema.
 
 ### Phase 2 — LiteLLM gateway
@@ -88,7 +90,7 @@ Each phase: **Concept (ELI10)** → **Build** → **Break-it experiment** → **
 ### Phase 4 — Model routing
 - **ELI10:** Don't send a surgeon to put on a band-aid. Easy jobs → cheap fast model; hard jobs → expensive smart model.
 - **Concepts:** cost/quality/latency triangle, rule-based routing, classifier routing, cascade (try cheap, escalate if low confidence), LiteLLM router strategies.
-- **Build:** classify doc type with Haiku → extract with Haiku for receipts, Sonnet for contracts. Low confidence → escalate.
+- **Build:** Haiku classifies (invoice/receipt) and rates difficulty → clean single-page docs extracted by Haiku; multi-page invoices, blurry photos, handwriting go to Sonnet. Math check fails or low confidence → escalate.
 - **Break it:** compare cost + accuracy table: all-cheap vs all-strong vs routed.
 - **Checkpoint:** When routing saves money vs when it silently costs accuracy.
 
@@ -160,6 +162,7 @@ Each phase: **Concept (ELI10)** → **Build** → **Break-it experiment** → **
 ### Phase 13 — LangGraph (the Upload Agent)
 - **ELI10:** A flowchart the AI walks through. Each box does one job; arrows decide where to go next, including loops ("try again") and "ask a human."
 - **Concepts:** state, nodes, edges, conditional edges, loops/retries, checkpointing, human-in-the-loop, agent vs workflow.
+- **Validation rules (plain code, not LLM):** line items sum to subtotal; subtotal + tax (+ tip) = total; dates valid; duplicate invoice_no for same vendor = flag.
 
 ```
   upload ─► classify ─► extract ─► validate ──ok──► store ─► index ─► done
