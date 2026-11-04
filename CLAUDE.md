@@ -25,7 +25,7 @@ This repo is a hands-on GenAI course (see `PLAN.md`). The learner reads an HTML 
 
 ## Keys and models: the AI gateway rule
 - Every LLM and embedding call goes through the **LiteLLM proxy** (`http://localhost:4000`), using an OpenAI-compatible client and a **virtual key**.
-- `OPENAI_API_KEY` and `ANTHROPIC_API_KEY` are read **only** by the LiteLLM container. App and lesson code must never read them or import vendor SDKs to call models directly. (Module 01 L01 may show a direct call once, for contrast.)
+- `OPENAI_API_KEY` and `ANTHROPIC_API_KEY` are read **only** by the LiteLLM gateway (Docker container on Mac, background process in Colab). App and lesson code must never read them or import vendor SDKs to call models directly. (Module 01 L01 may show a direct call once, for contrast.)
 - App code uses model **aliases** (`fast`, `smart`, `embed`, …) that are defined in the gateway config, never vendor model IDs.
 - `.env` is git-ignored; keep `.env.example` up to date.
 
