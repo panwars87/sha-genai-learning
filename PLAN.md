@@ -56,7 +56,8 @@ sha-genai-learning/
     │   ├── lessons/              # L01_*.py, L02_*.py … one per chapter section, each runs on its own
     │   ├── experiments/          # "break it" scripts
     │   ├── app/                  # DocuMind as of the END of this module (full snapshot)
-    │   └── NOTES.md              # your findings
+    │   ├── NOTES.md              # your findings
+    │   └── colab.ipynb           # one-click launcher for Google Colab
     ├── 02-prompt-engineering-structured-output/
     └── …
 ```
@@ -65,6 +66,16 @@ sha-genai-learning/
 - **The gateway config is a snapshot per module**: compare `01/gateway/config.yaml` with `10/gateway/config.yaml` to see aliases grow into routing, fallbacks and caching.
 
 ---
+
+### Two ways to run
+| | Mac (local) | Google Colab |
+|---|---|---|
+| Gateway | LiteLLM in Docker | LiteLLM proxy started as a background process in the notebook |
+| Keys | `.env` read only by the gateway | Colab Secrets → passed only to the gateway process |
+| Vector DB / cache / tracing | pgvector, Redis, Langfuse in Docker | Chroma (embedded), hosted Redis, Langfuse Cloud |
+| Switch | `runtime: local` | `runtime: colab` |
+
+The code is identical in both; only config changes. Enterprise notes (how this scales in a bank) live in each HTML chapter.
 
 ## 3. Modules
 

@@ -11,8 +11,17 @@ This repo is a hands-on GenAI course (see `PLAN.md`). The learner reads an HTML 
   - `experiments/`: "break it" scripts
   - `app/`: a **full snapshot** of DocuMind at the end of this module (start by copying the previous module's `app/`)
   - `NOTES.md`: left empty for the learner
+  - `colab.ipynb`: Colab launcher (see "Two ways to run")
+- Enterprise/production-at-scale notes (SSO, secrets managers, compliance, rate limits) go **in `chapter.html` only**, not in READMEs.
 - Shared items live only in `infra/` (docker-compose) and `data/` (sample documents + `golden/`).
 - Build **one module at a time**. Do not create later modules until the learner asks.
+
+## Two ways to run (every module supports both)
+- **Mac (local):** `infra/docker-compose.yml` runs LiteLLM, Postgres+pgvector, Redis and Langfuse.
+- **Google Colab:** each module ships `colab.ipynb`, a thin launcher. It clones the repo, installs `app/`, starts the LiteLLM proxy as a background process on `localhost:4000`, then runs each lesson in its own cell. Services Colab can't run use embedded or hosted options (e.g. Chroma, Langfuse Cloud), chosen by config.
+- The run mode is one config value (`runtime: local | colab`). Code paths stay identical; only URLs and backends change.
+- In Colab, keys come from **Colab Secrets** and are passed **only** into the LiteLLM subprocess environment, never into notebook variables the app reads.
+- The `.py` lessons are the source of truth; the notebook only calls them.
 
 ## Keys and models: the AI gateway rule
 - Every LLM and embedding call goes through the **LiteLLM proxy** (`http://localhost:4000`), using an OpenAI-compatible client and a **virtual key**.
