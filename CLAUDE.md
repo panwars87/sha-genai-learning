@@ -20,8 +20,23 @@ This repo is a hands-on GenAI course (see `PLAN.md`). The learner reads an HTML 
 - App code uses model **aliases** (`fast`, `smart`, `embed`, …) that are defined in the gateway config, never vendor model IDs.
 - `.env` is git-ignored; keep `.env.example` up to date.
 
-## Code style
-- Simple, readable, heavily commented for learning. Concepts matter more than abstractions.
-- Python + uv; FastAPI and React only where the plan calls for them.
-- Use only made-up or public sample data. Never real financial or personal documents.
-- Check current library and model docs before pinning versions or model IDs.
+## Code standards (production-ready, but simple)
+The audience is a Director: code should read like a clear explanation of the concept and still be fit to deploy.
+
+- **Everything comes from config; nothing is hard-coded.**
+  - Settings that can change (model aliases, temperatures, token limits, URLs, paths, thresholds) live in the module's `app/config/settings.yaml`, loaded through a typed `pydantic-settings` class.
+  - Environment variables override YAML. Secrets come **only** from the environment.
+  - No magic numbers or strings in code.
+  - Prompts live in `app/prompts/*.md` (or `.yaml`), never as inline strings.
+- **Typed:** type hints everywhere. Data in and out of every boundary (LLM output, API, DB) is a Pydantic model.
+- **Docs:**
+  - Every file starts with a module docstring: what it does, and *which concept it teaches*.
+  - Every public function has a short Google-style docstring.
+  - Comments explain *why*, not *what*.
+- **Simple:** small functions; plain modules over class hierarchies; no metaprogramming, no clever tricks. If it needs a diagram to follow, simplify it.
+- **Logging, not print, in `app/`:** use the standard `logging` module, configured in one place. Lessons may `print` (they are demos).
+- **Errors:** fail fast with clear messages (e.g. "gateway unreachable at X: is docker compose up?"). Retries and fallbacks belong in the gateway, not the app.
+- **Quality gates:** `ruff` (lint + format) and `pytest`. Every `app/` snapshot ships a few focused tests that run without network access (mock the gateway).
+- **Runtime:** Python 3.12 + uv (`pyproject.toml` per module `app/`); FastAPI and React only where the plan calls for them.
+- **Data:** only made-up or public sample data. Never real financial or personal documents.
+- **Versions:** check current library and model docs before pinning versions or model IDs.
