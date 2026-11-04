@@ -13,19 +13,25 @@ This repo is a hands-on GenAI course (see `PLAN.md`). The learner reads an HTML 
   - `NOTES.md`: left empty for the learner
   - `colab.ipynb`: Colab launcher (see "Two ways to run")
 - Enterprise/production-at-scale notes (SSO, secrets managers, compliance, rate limits) go **in `chapter.html` only**, not in READMEs.
-- Shared items live only in `infra/` (docker-compose) and `data/` (sample documents + `golden/`).
+- Shared items live only in `infra/` (gateway start script, setup helpers) and `data/` (sample documents + `golden/`).
 - Build **one module at a time**. Do not create later modules until the learner asks.
 
-## Two ways to run (every module supports both)
-- **Mac (local):** `infra/docker-compose.yml` runs LiteLLM, Postgres+pgvector, Redis and Langfuse.
-- **Google Colab:** each module ships `colab.ipynb`, a thin launcher. It clones the repo, installs `app/`, starts the LiteLLM proxy as a background process on `localhost:4000`, then runs each lesson in its own cell. Services Colab can't run use embedded or hosted options (e.g. Chroma, Langfuse Cloud), chosen by config.
-- The run mode is one config value (`runtime: local | colab`). Code paths stay identical; only URLs and backends change.
+## Two ways to run, no Docker required (every module supports both)
+The learner uses a MacBook Air, so the setup must stay light. **Docker is not required anywhere.**
+- **Gateway:** the LiteLLM proxy is installed with uv (`litellm[proxy]`) and runs as a local background process on `localhost:4000`. On Mac it starts with `make gateway`; in Colab, with a notebook cell.
+- **Postgres:** one free hosted Postgres (e.g. Neon) with pgvector. It holds LiteLLM's virtual keys and spend (LiteLLM needs Postgres for virtual keys), and later the vectors and extracted fields. Mac and Colab share the same database.
+- **Tracing:** Langfuse Cloud (free tier).
+- **Cache (Module 10):** hosted Redis free tier, or `brew install redis` on Mac.
+- **Learning-stage vector DB:** Chroma, embedded (a pip package; no server).
+- **Google Colab:** each module ships `colab.ipynb`, a thin launcher. It clones the repo, installs `app/`, starts the gateway, then runs each lesson in its own cell.
+- The run mode is one config value (`runtime: local | colab`). It changes only where keys and paths come from; code paths are identical.
+- Before relying on a hosted free tier, confirm it is still offered; free tiers change.
 - In Colab, keys come from **Colab Secrets** and are passed **only** into the LiteLLM subprocess environment, never into notebook variables the app reads.
 - The `.py` lessons are the source of truth; the notebook only calls them.
 
 ## Keys and models: the AI gateway rule
 - Every LLM and embedding call goes through the **LiteLLM proxy** (`http://localhost:4000`), using an OpenAI-compatible client and a **virtual key**.
-- `OPENAI_API_KEY` and `ANTHROPIC_API_KEY` are read **only** by the LiteLLM gateway (Docker container on Mac, background process in Colab). App and lesson code must never read them or import vendor SDKs to call models directly. (Module 01 L01 may show a direct call once, for contrast.)
+- `OPENAI_API_KEY` and `ANTHROPIC_API_KEY` are read **only** by the LiteLLM gateway (a local background process, on Mac and in Colab). App and lesson code must never read them or import vendor SDKs to call models directly. (Module 01 L01 may show a direct call once, for contrast.)
 - App code uses model **aliases** (`fast`, `smart`, `embed`, …) that are defined in the gateway config, never vendor model IDs.
 - `.env` is git-ignored; keep `.env.example` up to date.
 

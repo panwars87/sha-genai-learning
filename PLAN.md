@@ -44,7 +44,7 @@ sha-genai-learning/
 ├── PLAN.md                       # this file
 ├── .env.example                  # OPENAI_API_KEY, ANTHROPIC_API_KEY, LITELLM_MASTER_KEY
 ├── infra/
-│   └── docker-compose.yml        # litellm, postgres+pgvector, redis, langfuse (added as modules need them)
+│   └── start_gateway.sh          # starts the LiteLLM proxy locally (no Docker)
 ├── data/
 │   ├── invoices/   receipts/     # made-up invoices + public receipt datasets (SROIE / CORD)
 │   └── golden/                   # hand-checked correct answers (JSON) for evals
@@ -68,11 +68,16 @@ sha-genai-learning/
 ---
 
 ### Two ways to run
-| | Mac (local) | Google Colab |
+**No Docker needed.** Everything is a pip package or a free hosted service, so it runs on a MacBook Air.
+
+| | MacBook Air | Google Colab |
 |---|---|---|
-| Gateway | LiteLLM in Docker | LiteLLM proxy started as a background process in the notebook |
-| Keys | `.env` read only by the gateway | Colab Secrets → passed only to the gateway process |
-| Vector DB / cache / tracing | pgvector, Redis, Langfuse in Docker | Chroma (embedded), hosted Redis, Langfuse Cloud |
+| Gateway | LiteLLM proxy as a local process (`make gateway`) | Same, started from a notebook cell |
+| Keys | `.env`, read only by the gateway | Colab Secrets, passed only to the gateway |
+| Postgres + pgvector (gateway keys and spend, vectors, extracted fields) | Hosted free Postgres (e.g. Neon), shared by both | same |
+| Tracing | Langfuse Cloud (free tier) | same |
+| Cache (Module 10) | Hosted Redis, or `brew install redis` | Hosted Redis |
+| Learning vector DB | Chroma (embedded, no server) | same |
 | Switch | `runtime: local` | `runtime: colab` |
 
 The code is identical in both; only config changes. Enterprise notes (how this scales in a bank) live in each HTML chapter.
