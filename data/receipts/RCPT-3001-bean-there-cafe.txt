@@ -1,0 +1,18 @@
+   *** BEAN THERE CAFE ***
+   12 Imaginary St, Riverton
+   Tel 000-000-0000
+
+   2026-10-03   08:42   Till 2
+   Server: Sam
+
+   Flat White (L)        4.75
+   Blueberry Muffin      3.25
+   Oat Milk Upgrade      0.60
+   ---------------------------
+   SUBTOTAL              8.60
+   TAX 8%                0.69
+   TIP                   1.50
+   TOTAL                10.79
+
+   VISA ****4242   APPROVED
+   Thank you! Come again :)

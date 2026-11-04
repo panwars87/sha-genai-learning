@@ -6,8 +6,9 @@ This repo is a hands-on GenAI course (see `PLAN.md`). The learner reads an HTML 
 - One folder per module: `modules/NN-kebab-name/`, with:
   - `chapter.html`: the chapter for this module (the same content is published as an artifact)
   - `README.md`: goals, setup, how to run, checkpoint quiz
-  - `gateway/config.yaml`: LiteLLM config **as of this module**
-  - `lessons/LNN_snake_name.py`: one per chapter section, numbered to match it, runs on its own, prints what it demonstrates
+  - `gateway/config.yaml`: LiteLLM config **as of this module**, plus `gateway/config.mock.yaml` (same aliases, `mock_response` replies) for free practice
+  - `lessons/LNN_snake_name.py`: one per chapter section, numbered to match it, runs on its own, prints what it demonstrates. Lesson settings (prompts, limits) live in `lessons/lessons.yaml`; a chapter-only section has no lesson file
+  - Run lessons from the module folder: `uv run --project app python lessons/LNN_*.py`
   - `experiments/`: "break it" scripts
   - `app/`: a **full snapshot** of DocuMind at the end of this module (start by copying the previous module's `app/`)
   - `NOTES.md`: left empty for the learner

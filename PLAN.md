@@ -53,7 +53,8 @@ sha-genai-learning/
     │   ├── chapter.html          # the HTML chapter (also published as an artifact)
     │   ├── README.md             # goals · setup · how to run · checkpoint quiz
     │   ├── gateway/config.yaml   # LiteLLM config as of this module (shows how the gateway evolves)
-    │   ├── lessons/              # L01_*.py, L02_*.py … one per chapter section, each runs on its own
+    │   ├── gateway/config.mock.yaml  # same aliases, canned replies: free practice
+    │   ├── lessons/              # L01_*.py … one per chapter section (+ lessons.yaml for their settings)
     │   ├── experiments/          # "break it" scripts
     │   ├── app/                  # DocuMind as of the END of this module (full snapshot)
     │   ├── NOTES.md              # your findings

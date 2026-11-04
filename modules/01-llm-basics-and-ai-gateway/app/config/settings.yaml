@@ -1,0 +1,34 @@
+# DocuMind settings — Module 01.
+# Every value here can be overridden by an environment variable:
+#   DOCUMIND_<SECTION>__<KEY>   e.g.  DOCUMIND_GATEWAY__BASE_URL=http://localhost:4100
+# Secrets (DOCUMIND_API_KEY) never live in this file — only in the environment / .env.
+
+runtime: local            # local | colab — changes where keys/paths come from, not the code
+
+gateway:
+  base_url: http://localhost:4000   # the LiteLLM proxy. The app never calls vendors directly.
+  timeout_seconds: 60
+  # Retries and fallbacks are the gateway's job (see gateway/config.yaml), so the client
+  # does not retry on its own. This keeps one place in charge of resilience.
+  client_max_retries: 0
+
+models:
+  # Aliases defined in the gateway config. The app never names a vendor model.
+  summarize: fast
+
+generation:
+  # Current models "think" before answering, and thinking tokens count toward this limit.
+  # Leave headroom, or the answer can be cut off (finish_reason = "length").
+  max_output_tokens: 2000
+
+documents:
+  allowed_extensions: [".txt", ".md"]   # PDFs and images arrive in Module 02
+  max_chars: 50000                       # guardrail against accidentally huge (and costly) inputs
+  encoding: utf-8
+
+prompts:
+  directory: prompts                     # relative to the app folder
+
+logging:
+  level: INFO
+  format: "%(asctime)s %(levelname)-7s %(name)s — %(message)s"

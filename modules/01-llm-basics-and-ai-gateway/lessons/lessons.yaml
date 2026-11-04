@@ -1,0 +1,49 @@
+# Settings used only by the Module 01 lessons and experiments.
+# The app's own settings live in ../app/config/settings.yaml.
+
+admin:
+  # The gateway admin key. Only lessons that issue or revoke keys read it.
+  master_key_env: LITELLM_MASTER_KEY
+
+direct_call:          # L01: "the old way", calling one vendor directly
+  vendor_key_env: ANTHROPIC_API_KEY
+  vendor_model: claude-haiku-5-5   # a vendor model ID, used ONLY in L01 for contrast
+  prompt: "In one sentence, what is an invoice?"
+  max_output_tokens: 1000
+
+virtual_key:          # L04: the key DocuMind will use from now on
+  key_alias: documind-dev
+  models: [fast, smart, fast-anthropic, smart-anthropic, fast-openai, smart-openai]
+  max_budget_usd: 2.00
+  budget_duration: 30d     # the budget resets every 30 days
+  metadata:
+    owner: learner
+    purpose: "DocuMind course, Module 01+"
+
+two_vendors:          # L05: one client, two vendors
+  aliases: [fast-anthropic, fast-openai]
+  prompt: "Explain in two sentences what a receipt proves, for a 10-year-old."
+  max_output_tokens: 1000
+
+tokens:               # L06: tokens, cost and the "randomness" knobs
+  alias: fast
+  short_prompt: "Say hello."
+  long_prompt_file: ../../../data/invoices/INV-1001-acme-supplies.txt
+  repeat_prompt: "Give me a creative one-line name for a café receipt scanner app."
+  repeat_runs: 3
+  max_output_tokens: 1000
+  temperature_probe: 0.0
+
+memory:               # L07: the model forgets between calls
+  alias: fast
+  fact: "Remember this: invoice INV-1001 from Acme has a total of $1,101.60."
+  question: "What is the total of invoice INV-1001?"
+  max_output_tokens: 1000
+
+experiments:
+  alias: fast
+  restricted_alias: smart          # E04 tries to call this with a key that only allows "fast"
+  probe_prompt: "Reply with the word OK."
+  probe_max_output_tokens: 500
+  tiny_max_output_tokens: 16       # E03: far too few for a full answer
+  long_answer_prompt: "List ten things every invoice should contain, with one line each."

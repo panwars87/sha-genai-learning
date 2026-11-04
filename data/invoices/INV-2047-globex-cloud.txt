@@ -1,0 +1,22 @@
+Globex Cloud Services GmbH
+Musterstraße 1, 10115 Berlin (fictional)
+VAT: DE000000000
+
+Rechnung / INVOICE  #INV-2047
+Issued 01 Oct 2026  ·  Due 31 Oct 2026
+
+Customer: Northwind Analytics Inc., Riverton
+
+Service period: September 2026
+
+  Compute hours (standard tier)     1,200 h  x €0.085   =   €102.00
+  Object storage                      850 GB x €0.020   =    €17.00
+  Managed database (small)                1 x €45.00    =    €45.00
+  Premium support plan                    1 x €150.00   =   €150.00
+
+  Net amount                                               €314.00
+  VAT 19%                                                   €59.66
+  Amount payable                                           €373.66
+
+Payment: SEPA transfer, reference INV-2047.
+Questions? accounts@globex-cloud.example

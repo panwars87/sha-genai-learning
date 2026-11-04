@@ -1,0 +1,56 @@
+# LiteLLM AI gateway — Module 01.
+#
+# The app only ever asks for an ALIAS (left column). The gateway maps it to a real vendor
+# model (right column). Swapping vendors = editing this file, with no app change.
+#
+#   alias            → vendor model                 price per 1M tokens (in / out)*
+#   fast-anthropic   → anthropic/claude-haiku-5-5   $0.10 / $0.50
+#   smart-anthropic  → anthropic/claude-sonnet-5-5  $2.00 / $10.00
+#   fast-openai      → openai/gpt-6-luna            $0.10 / $0.50
+#   smart-openai     → openai/gpt-6.1-sol           $2.00 / $10.00
+#   fast             → fast-anthropic   (the app's default "cheap and quick")
+#   smart            → smart-anthropic  (the app's default "careful and capable")
+#
+# *Prices from LiteLLM 1.108.0's built-in cost map (checked 2026-11-04). The gateway uses
+#  them to compute the cost of every call. Vendors change prices, so re-check them.
+#
+# Secrets use the  os.environ/NAME  syntax: the gateway reads them from its own
+# environment. They never appear in this file or in the app.
+
+model_list:
+  - model_name: fast-anthropic
+    litellm_params:
+      model: anthropic/claude-haiku-5-5
+      api_key: os.environ/ANTHROPIC_API_KEY
+  - model_name: smart-anthropic
+    litellm_params:
+      model: anthropic/claude-sonnet-5-5
+      api_key: os.environ/ANTHROPIC_API_KEY
+  - model_name: fast-openai
+    litellm_params:
+      model: openai/gpt-6-luna
+      api_key: os.environ/OPENAI_API_KEY
+  - model_name: smart-openai
+    litellm_params:
+      model: openai/gpt-6.1-sol
+      api_key: os.environ/OPENAI_API_KEY
+
+router_settings:
+  # Friendly aliases the app uses. Module 04 turns these into real routing and fallbacks.
+  model_group_alias:
+    fast: fast-anthropic
+    smart: smart-anthropic
+
+litellm_settings:
+  # Resilience lives HERE, not in app code. Retry transient vendor errors twice.
+  num_retries: 2
+  request_timeout: 60
+  # false = if the app sends a parameter a model doesn't support, fail loudly instead of
+  # silently dropping it. Lesson L06 relies on this to show how "temperature" changed.
+  drop_params: false
+
+general_settings:
+  # Admin ("root") key: only setup scripts use it, to issue virtual keys.
+  master_key: os.environ/LITELLM_MASTER_KEY
+  # Postgres stores virtual keys, budgets and spend.
+  database_url: os.environ/DATABASE_URL

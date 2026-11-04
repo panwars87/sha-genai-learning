@@ -1,0 +1,31 @@
+ACME OFFICE SUPPLIES LTD
+42 Fictional Way, Springfield, ST 00000
+billing@acme-supplies.example  |  Tax ID: XX-0000001
+
+INVOICE
+
+Invoice No:     INV-1001
+Invoice Date:   2026-09-15
+Due Date:       2026-10-15
+Payment Terms:  Net 30
+
+Bill To:
+  Northwind Analytics Inc.
+  Attn: Accounts Payable
+  7 Example Plaza, Suite 300, Riverton, RT 11111
+
+Description                         Qty    Unit Price      Amount
+----------------------------------------------------------------
+A4 Copy Paper (box of 5 reams)       10       $32.00      $320.00
+Black Ink Cartridge XL                6       $45.50      $273.00
+Ergonomic Office Chair                2      $189.00      $378.00
+Whiteboard Markers (pack of 12)       5        $9.80       $49.00
+----------------------------------------------------------------
+                                          Subtotal:     $1,020.00
+                                          Sales Tax (8%):  $81.60
+                                          TOTAL DUE:    $1,101.60
+
+Currency: USD
+Please pay by bank transfer to Example Bank, Acct ****1234.
+Late payments incur a 1.5% monthly fee.
+Thank you for your business!

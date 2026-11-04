@@ -1,0 +1,22 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+uv.lock.bak
+
+# Gateway runtime
+infra/gateway/.prisma-generated
+*.log
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

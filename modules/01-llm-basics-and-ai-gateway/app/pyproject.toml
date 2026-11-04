@@ -1,0 +1,41 @@
+[project]
+name = "documind"
+version = "0.1.0"
+description = "DocuMind — intelligent document processing (Module 01: LLM basics + AI gateway)"
+requires-python = ">=3.12"
+dependencies = [
+    "openai==3.45.0",            # OpenAI-compatible client; it talks to OUR gateway, not to OpenAI
+    "pydantic==2.14.2",
+    "pydantic-settings==2.16.2", # typed settings from YAML + environment
+    "pyyaml==6.0.3",
+]
+
+[project.scripts]
+documind = "documind.cli:main"
+
+[dependency-groups]
+dev = ["pytest==8.4.2", "ruff==0.14.4"]
+# Only lesson L01 uses a vendor SDK directly, to show "the old way" for contrast.
+lessons = ["anthropic==2.5.0"]
+
+[tool.uv]
+default-groups = ["dev", "lessons"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/documind"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+# Colab notebooks are thin launchers full of shell (!) lines; lint the .py files they call.
+extend-exclude = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
