@@ -1,0 +1,40 @@
+{
+  "document": "INV-2047-globex-cloud.txt",
+  "doc_type": "invoice",
+  "fields": {
+    "vendor": "Globex Cloud Services GmbH",
+    "invoice_no": "INV-2047",
+    "invoice_date": "2026-10-01",
+    "due_date": "2026-10-31",
+    "currency": "EUR",
+    "subtotal": 314.0,
+    "tax": 59.66,
+    "total": 373.66,
+    "line_items": [
+      {
+        "description": "Compute hours (standard tier)",
+        "quantity": 1200,
+        "unit_price": 0.085,
+        "amount": 102.0
+      },
+      {
+        "description": "Object storage",
+        "quantity": 850,
+        "unit_price": 0.02,
+        "amount": 17.0
+      },
+      {
+        "description": "Managed database (small)",
+        "quantity": 1,
+        "unit_price": 45.0,
+        "amount": 45.0
+      },
+      {
+        "description": "Premium support plan",
+        "quantity": 1,
+        "unit_price": 150.0,
+        "amount": 150.0
+      }
+    ]
+  }
+}

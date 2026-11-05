@@ -1,0 +1,46 @@
+{
+  "document": "RCPT-3002-handy-hardware.txt",
+  "doc_type": "receipt",
+  "fields": {
+    "merchant": "Handy Hardware #0042",
+    "date": "2026-10-12",
+    "currency": "USD",
+    "subtotal": 109.32,
+    "tax": 8.75,
+    "tip": null,
+    "total": 118.07,
+    "payment_method": "cash",
+    "items": [
+      {
+        "description": "Wood Screws 50PK",
+        "quantity": 2,
+        "unit_price": 6.49,
+        "amount": 12.98
+      },
+      {
+        "description": "Cordless Drill 18V",
+        "quantity": 1,
+        "unit_price": null,
+        "amount": 89.0
+      },
+      {
+        "description": "Safety Glasses",
+        "quantity": 1,
+        "unit_price": null,
+        "amount": 7.99
+      },
+      {
+        "description": "Measuring Tape 5M",
+        "quantity": 1,
+        "unit_price": null,
+        "amount": 11.5
+      },
+      {
+        "description": "Member Discount 10%",
+        "quantity": null,
+        "unit_price": null,
+        "amount": -12.15
+      }
+    ]
+  }
+}

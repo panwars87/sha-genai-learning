@@ -1,0 +1,20 @@
+INITECH CONSULTING LLC
+900 Placeholder Ave, Floor 4, Springfield, ST 00000
+
+                                              INVOICE INV-3310
+Date: November 2, 2026
+Terms: Due upon receipt
+
+Client: Northwind Analytics Inc. — Finance Transformation Programme
+
+  Item                                   Qty      Rate        Amount
+  Strategy workshop (1 day, on site)       1   2,400.00      2,400.00
+  Process mapping (hours)                 12     150.00      1,800.00
+  Travel expenses (at cost)                1     312.40        312.40
+  Loyalty discount                                            -200.00
+
+  Subtotal                                                   4,312.40
+  Sales tax (professional services exempt)                       0.00
+  TOTAL (USD)                                                4,312.40
+
+Remit to: Initech Consulting LLC, Example Bank, routing on request.

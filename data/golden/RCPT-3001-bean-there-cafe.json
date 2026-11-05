@@ -1,0 +1,34 @@
+{
+  "document": "RCPT-3001-bean-there-cafe.txt",
+  "doc_type": "receipt",
+  "fields": {
+    "merchant": "Bean There Cafe",
+    "date": "2026-10-03",
+    "currency": "USD",
+    "subtotal": 8.6,
+    "tax": 0.69,
+    "tip": 1.5,
+    "total": 10.79,
+    "payment_method": "card",
+    "items": [
+      {
+        "description": "Flat White (L)",
+        "quantity": null,
+        "unit_price": null,
+        "amount": 4.75
+      },
+      {
+        "description": "Blueberry Muffin",
+        "quantity": null,
+        "unit_price": null,
+        "amount": 3.25
+      },
+      {
+        "description": "Oat Milk Upgrade",
+        "quantity": null,
+        "unit_price": null,
+        "amount": 0.6
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "document": "RCPT-3005-roadrunner-fuel.txt",
+  "doc_type": "receipt",
+  "fields": {
+    "merchant": "Roadrunner Fuel #18",
+    "date": "2026-10-30",
+    "currency": "CAD",
+    "subtotal": 74.07,
+    "tax": 9.63,
+    "tip": null,
+    "total": 83.7,
+    "payment_method": "card",
+    "items": [
+      {
+        "description": "Unleaded Regular",
+        "quantity": 38.214,
+        "unit_price": 1.729,
+        "amount": 66.07
+      },
+      {
+        "description": "Car Wash - Basic",
+        "quantity": null,
+        "unit_price": null,
+        "amount": 8.0
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "document": "RCPT-3004-freshmart.txt",
+  "doc_type": "receipt",
+  "fields": {
+    "merchant": "FreshMart Groceries",
+    "date": "2026-10-27",
+    "currency": "USD",
+    "subtotal": null,
+    "tax": null,
+    "tip": null,
+    "total": 11.45,
+    "payment_method": "mobile",
+    "items": [
+      {
+        "description": "Bananas",
+        "quantity": 1.2,
+        "unit_price": 1.1,
+        "amount": 1.32
+      },
+      {
+        "description": "Whole Milk 2L",
+        "quantity": null,
+        "unit_price": null,
+        "amount": 2.89
+      },
+      {
+        "description": "Sourdough Loaf",
+        "quantity": null,
+        "unit_price": null,
+        "amount": 4.25
+      },
+      {
+        "description": "Free Range Eggs (12)",
+        "quantity": null,
+        "unit_price": null,
+        "amount": 3.99
+      },
+      {
+        "description": "Coupon: Eggs",
+        "quantity": null,
+        "unit_price": null,
+        "amount": -1.0
+      }
+    ]
+  }
+}

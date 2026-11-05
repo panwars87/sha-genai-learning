@@ -1,0 +1,40 @@
+{
+  "document": "INV-3310-initech-consulting.txt",
+  "doc_type": "invoice",
+  "fields": {
+    "vendor": "Initech Consulting LLC",
+    "invoice_no": "INV-3310",
+    "invoice_date": "2026-11-02",
+    "due_date": null,
+    "currency": "USD",
+    "subtotal": 4312.4,
+    "tax": 0.0,
+    "total": 4312.4,
+    "line_items": [
+      {
+        "description": "Strategy workshop (1 day, on site)",
+        "quantity": 1,
+        "unit_price": 2400.0,
+        "amount": 2400.0
+      },
+      {
+        "description": "Process mapping (hours)",
+        "quantity": 12,
+        "unit_price": 150.0,
+        "amount": 1800.0
+      },
+      {
+        "description": "Travel expenses (at cost)",
+        "quantity": 1,
+        "unit_price": 312.4,
+        "amount": 312.4
+      },
+      {
+        "description": "Loyalty discount",
+        "quantity": null,
+        "unit_price": null,
+        "amount": -200.0
+      }
+    ]
+  }
+}

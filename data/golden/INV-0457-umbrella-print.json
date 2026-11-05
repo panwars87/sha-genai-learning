@@ -1,0 +1,34 @@
+{
+  "document": "INV-0457-umbrella-print.txt",
+  "doc_type": "invoice",
+  "fields": {
+    "vendor": "Umbrella Print & Design Ltd",
+    "invoice_no": "INV-0457",
+    "invoice_date": "2026-10-18",
+    "due_date": null,
+    "currency": "GBP",
+    "subtotal": 275.5,
+    "tax": 55.1,
+    "total": 330.6,
+    "line_items": [
+      {
+        "description": "Business cards, 500 per box",
+        "quantity": 2,
+        "unit_price": 38.0,
+        "amount": 76.0
+      },
+      {
+        "description": "Pull-up banner 2m x 1m",
+        "quantity": 1,
+        "unit_price": 64.5,
+        "amount": 64.5
+      },
+      {
+        "description": "Design time (hours)",
+        "quantity": 3,
+        "unit_price": 45.0,
+        "amount": 135.0
+      }
+    ]
+  }
+}

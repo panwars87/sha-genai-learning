@@ -1,0 +1,34 @@
+{
+  "document": "INV-5120-stark-sports.txt",
+  "doc_type": "invoice",
+  "fields": {
+    "vendor": "Stark Sports Goods Pvt Ltd",
+    "invoice_no": "INV-5120",
+    "invoice_date": "2026-09-28",
+    "due_date": "2026-10-28",
+    "currency": "INR",
+    "subtotal": 40100.0,
+    "tax": 7218.0,
+    "total": 47318.0,
+    "line_items": [
+      {
+        "description": "Cricket bat (English willow)",
+        "quantity": 3,
+        "unit_price": 8500.0,
+        "amount": 25500.0
+      },
+      {
+        "description": "Batting gloves (pair)",
+        "quantity": 6,
+        "unit_price": 1200.0,
+        "amount": 7200.0
+      },
+      {
+        "description": "Cricket balls (box of 6)",
+        "quantity": 4,
+        "unit_price": 1850.0,
+        "amount": 7400.0
+      }
+    ]
+  }
+}

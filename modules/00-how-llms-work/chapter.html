@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How LLMs Work</title>
+<style>
+/* DocuMind course chapters. Shared by every modules/NN-name/chapter.html.
+   Layout: one 68ch reading column; figures and tables may run wider. Each section ends with a
+   "now run" slip naming the lesson script, the way a receipt names the till it came from.
+   System fonts only, so chapters render offline. */
+:root {
+  --paper: #F5F6F8; --surface: #FFFFFF; --ink: #151B2C; --muted: #586074; --rule: #D9DEE6;
+  --carbon: #2443C4; --carbon-soft: #E6EBFA; --stamp: #B3372A; --stamp-soft: #F7E8E5;
+  --ok: #1D7549; --code-bg: #EEF0F4;
+  --font-display: "Avenir Next Condensed", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Iowan Old Style", Charter, Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --measure: 68ch;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #0E1320; --surface: #151C2D; --ink: #E4E8F2; --muted: #9AA3B7; --rule: #2A3350;
+  --carbon: #93A9FF; --carbon-soft: #1B2544; --stamp: #F28B7B; --stamp-soft: #351D1B;
+  --ok: #63D39C; --code-bg: #1A2236; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #0E1320; --surface: #151C2D; --ink: #E4E8F2; --muted: #9AA3B7; --rule: #2A3350;
+  --carbon: #93A9FF; --carbon-soft: #1B2544; --stamp: #F28B7B; --stamp-soft: #351D1B;
+  --ok: #63D39C; --code-bg: #1A2236; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body);
+  font-size: 1.075rem; line-height: 1.65; }
+.page { max-width: 54rem; margin: 0 auto; padding-block: 2.5rem 5rem;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.prose > * { max-width: var(--measure); }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15;
+  text-wrap: balance; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 800; margin: 0.3rem 0 0.8rem; }
+h2 { font-size: 1.55rem; font-weight: 750; margin: 0 0 0.6rem; }
+h3 { font-size: 1.12rem; font-weight: 700; margin: 1.6rem 0 0.3rem; }
+p { margin: 0 0 1rem; }
+a { color: var(--carbon); }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--carbon); outline-offset: 2px; }
+strong { font-weight: 650; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.2rem; color: var(--ink); max-width: var(--measure); }
+.meta { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; font-family: var(--font-mono);
+  font-size: 0.82rem; color: var(--muted); margin: 1rem 0 0; }
+hr.cut { border: 0; border-top: 1.5px dashed var(--rule); margin: 2.6rem 0; }
+
+nav.toc { margin: 2rem 0 0; padding: 1rem 1.2rem; background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 6px; }
+nav.toc ol { margin: 0.4rem 0 0; padding-left: 1.4rem; columns: 2 16rem; column-gap: 2rem; }
+nav.toc li { margin: 0.15rem 0; break-inside: avoid; }
+
+section { scroll-margin-top: 1rem; }
+.secnum { font-family: var(--font-mono); font-size: 0.8rem; color: var(--carbon);
+  letter-spacing: 0.08em; display: block; margin-bottom: 0.2rem; }
+
+.eli10 { background: var(--carbon-soft); border-radius: 6px; padding: 0.9rem 1.1rem; margin: 0 0 1.2rem; }
+.eli10 .label, .director .label, .slip .label, .breakit .label { font-family: var(--font-mono);
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.25rem; }
+.eli10 .label { color: var(--carbon); }
+.eli10 p { margin: 0; }
+
+.slip { font-family: var(--font-mono); font-size: 0.86rem; background: var(--surface);
+  border: 1px dashed var(--muted); border-radius: 2px; padding: 0.75rem 1rem; margin: 1.4rem 0 0; }
+.slip .label { color: var(--muted); }
+.slip code { background: none; padding: 0; }
+.slip .cmd { display: block; overflow-x: auto; white-space: pre; color: var(--carbon); margin-top: 0.3rem; }
+
+.breakit { background: var(--stamp-soft); border-radius: 6px; padding: 0.8rem 1.1rem; margin: 1rem 0 0; }
+.breakit .label { color: var(--stamp); }
+.breakit ul { margin: 0.2rem 0 0; padding-left: 1.2rem; }
+
+.director { border: 1.5px solid var(--ink); border-radius: 6px; padding: 1rem 1.2rem; margin: 1.4rem 0 0; background: var(--surface); }
+.director .label { color: var(--ink); }
+.director ul { margin: 0.3rem 0 0; padding-left: 1.2rem; }
+.director li { margin: 0.25rem 0; }
+
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); padding: 0.08em 0.35em; border-radius: 3px; }
+pre { font-family: var(--font-mono); font-size: 0.84rem; line-height: 1.55; background: var(--code-bg);
+  border-radius: 6px; padding: 0.9rem 1.1rem; overflow-x: auto; margin: 0 0 1.1rem; max-width: 100%; }
+pre code { background: none; padding: 0; font-size: inherit; }
+.c { color: var(--muted); }
+
+.table-wrap { overflow-x: auto; margin: 0 0 1.2rem; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 0.45rem 0.7rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.02em; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--font-mono); font-size: 0.86rem; }
+
+figure { margin: 1.4rem 0 1.6rem; }
+figure .svg-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 0.8rem; }
+figure svg { display: block; width: 100%; min-width: 34rem; height: auto; }
+figcaption { font-size: 0.88rem; color: var(--muted); margin-top: 0.5rem; max-width: var(--measure); }
+svg text { font-family: var(--font-mono); font-size: 12.5px; fill: var(--ink); }
+svg .t-small { font-size: 11px; fill: var(--muted); }
+svg .t-head { font-family: var(--font-display); font-weight: 700; font-size: 14px; }
+svg .box { fill: var(--surface); stroke: var(--ink); stroke-width: 1.4; }
+svg .box-accent { fill: var(--carbon-soft); stroke: var(--carbon); stroke-width: 1.6; }
+svg .box-warn { fill: var(--stamp-soft); stroke: var(--stamp); stroke-width: 1.4; }
+svg .box-dash { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 4; }
+svg .line { stroke: var(--ink); stroke-width: 1.4; fill: none; }
+svg .line-accent { stroke: var(--carbon); stroke-width: 1.8; fill: none; }
+svg .line-warn { stroke: var(--stamp); stroke-width: 1.2; fill: none; }
+svg .arrowhead { fill: var(--ink); }
+svg .arrowhead-accent { fill: var(--carbon); }
+svg .arrowhead-warn { fill: var(--stamp); }
+svg .bar { fill: var(--carbon); }
+svg .bar-soft { fill: var(--carbon-soft); stroke: var(--carbon); stroke-width: 1; }
+
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 0.6rem 1rem; margin: 0 0 0.6rem; max-width: var(--measure); }
+summary { cursor: pointer; font-weight: 600; }
+details p { margin: 0.5rem 0 0.2rem; }
+
+dl.glossary { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.2rem; max-width: var(--measure); }
+dl.glossary dt { font-family: var(--font-mono); font-size: 0.88rem; font-weight: 600; }
+dl.glossary dd { margin: 0; }
+@media (max-width: 34rem) { dl.glossary { grid-template-columns: 1fr; } dl.glossary dd { margin-bottom: 0.5rem; } }
+
+.next { margin-top: 3rem; padding-top: 1.2rem; border-top: 1.5px dashed var(--rule); font-family: var(--font-mono); font-size: 0.9rem; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+body { margin: 0; }
+.files { font-family: var(--font-mono); font-size: 0.84rem; }
+</style>
+</head>
+<body>
+<div class="page">
+<header class="prose">
+  <span class="eyebrow">DocuMind course · Module 0</span>
+  <h1>How LLMs work</h1>
+  <p class="lede">Before any framework, a model is one request: messages go in, one message comes out. You'll see what a call really contains, why tokens are the unit of cost, how big the model's "desk" is, why it forgets everything, and why it rarely says the same thing twice. By the end DocuMind summarizes invoices and receipts from the command line.</p>
+  <div class="meta"><span>~45 min</span><span>7 scripts · 6 sections · 4 experiments</span><span>cost: about one cent</span></div>
+  <nav class="toc" aria-label="Sections"><span class="eyebrow">In this chapter</span>
+  <ol>
+    <li><a href="#s0">Set up your Mac</a></li><li><a href="#s1">What an LLM call is</a></li>
+    <li><a href="#s2">Tokens and cost</a></li><li><a href="#s3">The context window</a></li>
+    <li><a href="#s4">The model has no memory</a></li><li><a href="#s5">Same question, different answers</a></li>
+    <li><a href="#s6">The app: summarize</a></li><li><a href="#check">Break it and checkpoint</a></li>
+  </ol></nav>
+</header>
+
+<hr class="cut">
+<section id="s0" class="prose">
+  <span class="secnum">SECTION 0</span><h2>Set up your Mac</h2>
+  <p>The whole course needs two tools and two keys. There is nothing else to install and nothing to keep running.</p>
+<pre><code>brew install uv                  <span class="c"># Python + packages; git comes with: xcode-select --install</span>
+cd sha-genai-learning
+cp .env.example .env             <span class="c"># paste in ANTHROPIC_API_KEY and OPENAI_API_KEY</span>
+uv sync                          <span class="c"># installs everything, once (~1 min)</span></code></pre>
+  <p>Keys come from <code>console.anthropic.com</code> and <code>platform.openai.com</code>. Set a monthly spending limit in both consoles: the whole course costs a few dollars.</p>
+  <p>Every lesson is a short script you run from the repo root. Read its opening docstring first: it tells you what to look for.</p>
+  <p><strong>Practice mode:</strong> prefix any command with <code>DOCUMIND_GATEWAY__MOCK_RESPONSE="hello"</code> and every model call returns that text instantly, for free. Useful offline, but the numbers are made up.</p>
+  <div class="slip"><span class="label">Now run</span><code>00_check_setup.py</code><span class="cmd">uv run modules/00-how-llms-work/00_check_setup.py</span></div>
+</section>
+
+<hr class="cut">
+<section id="s1" class="prose">
+  <span class="secnum">SECTION 1</span><h2>What an LLM call is</h2>
+  <div class="eli10"><span class="label">Explain like I'm 10</span><p>An LLM is a super-autocomplete. It reads your words as small pieces called <strong>tokens</strong> and guesses the next piece, then the next, until the answer is done. It forgets everything the moment it finishes.</p></div>
+  <p>Every LLM feature, however clever it looks, is one request: a list of <strong>messages</strong> goes in, one message comes out. The <em>system</em> message sets the rules. The <em>user</em> message carries the task. The reply comes back as an <em>assistant</em> message, with token counts and a <code>finish_reason</code> that says whether the model finished (<code>stop</code>) or was cut off (<code>length</code>).</p>
+  <figure><div class="svg-wrap"><svg viewBox="0 0 720 200" role="img" aria-labelledby="d1t"><title id="d1t">An LLM call: messages in, reply out</title><defs>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead"/></marker>
+<marker id="ah-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead-accent"/></marker>
+<marker id="ah-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead-warn"/></marker>
+</defs>
+<rect class="box" x="20" y="30" width="200" height="140" rx="6"/>
+<text class="t-head" x="36" y="56">messages</text>
+<text x="36" y="84">system: the rules</text>
+<text x="36" y="106">user: the invoice</text>
+<text class="t-small" x="36" y="134">all turned into tokens</text>
+<text class="t-small" x="36" y="152">(~4 characters each)</text>
+<line class="line" x1="222" y1="100" x2="280" y2="100" marker-end="url(#ah)"/>
+<rect class="box-accent" x="284" y="55" width="180" height="90" rx="6"/>
+<text class="t-head" x="358" y="88">LLM</text>
+<text class="t-small" x="300" y="110">guess the next token,</text>
+<text class="t-small" x="300" y="126">again and again</text>
+<line class="line" x1="466" y1="100" x2="516" y2="100" marker-end="url(#ah)"/>
+<rect class="box" x="520" y="30" width="180" height="140" rx="6"/>
+<text class="t-head" x="536" y="56">reply</text>
+<text x="536" y="84">text</text>
+<text x="536" y="106">tokens in / out</text>
+<text x="536" y="128">finish_reason</text>
+<text class="t-small" x="300" y="182">no memory between calls</text>
+</svg></div><figcaption>One call. Nothing is stored on the model's side; if you want it to know something, you send it.</figcaption></figure>
+  <p>The script makes this call bare, through <strong>LiteLLM</strong>: a library that speaks one format to every vendor. It names one vendor's model in the code, <code>anthropic/claude-haiku-5-5</code>. Notice what's missing: no limit on spend, and switching vendor means editing code. Module 2 fixes both.</p>
+  <p>Current models <strong>think</strong> before they answer. The thinking is billed as output tokens and counts toward the output limit, even though you never see it.</p>
+  <div class="slip"><span class="label">Now run</span><code>01_first_call.py</code><span class="cmd">uv run modules/00-how-llms-work/01_first_call.py</span></div>
+</section>
+
+<hr class="cut">
+<section id="s2" class="prose">
+  <span class="secnum">SECTION 2</span><h2>Tokens and cost</h2>
+  <div class="eli10"><span class="label">Explain like I'm 10</span><p>The model doesn't read letters or words. It reads chunks, roughly three-quarters of a word each, and every chunk in and out has a price, like a taxi meter.</p></div>
+  <p><strong>Tokens are the unit of everything:</strong> cost, speed and limits. English averages about four characters per token. Numbers, codes like <code>INV-1001</code> and other languages break into more pieces, so they cost more per character. Output tokens cost about <strong>five times</strong> input tokens, so long answers are the expensive part.</p>
+  <h3>A worked example</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Summarize INV-1001</th><th class="num">Tokens</th><th class="num">fast (Haiku 5.5)</th><th class="num">smart (Sonnet 5.5)</th></tr></thead>
+    <tbody>
+    <tr><td>Input: prompt + invoice</td><td class="num">≈ 420</td><td class="num">$0.000042</td><td class="num">$0.000840</td></tr>
+    <tr><td>Output: thinking + summary</td><td class="num">≈ 300</td><td class="num">$0.000150</td><td class="num">$0.003000</td></tr>
+    <tr><td><strong>One document</strong></td><td class="num"></td><td class="num">$0.00019</td><td class="num">$0.0038</td></tr>
+    <tr><td><strong>10,000 documents / month</strong></td><td class="num"></td><td class="num">$1.92</td><td class="num">$38.40</td></tr>
+    </tbody></table></div>
+  <p>Prices per million tokens are $0.10 / $0.50 for Haiku 5.5 and $2 / $10 for Sonnet 5.5, from LiteLLM's built-in price list as of November 2026. The same job costs 20× more on the smart model. Choosing the right model per task is <em>model routing</em> (Module 4).</p>
+  <div class="director"><span class="label">At enterprise scale</span><ul>
+    <li><strong>Budgets are per token, not per seat.</strong> Forecast with documents × tokens per document × price, then add headroom for retries and thinking.</li>
+    <li><strong>What leaves the building:</strong> every token you send goes to the vendor. Check data-retention terms, the processing region and zero-data-retention options before sending customer documents.</li>
+    <li><strong>Chargeback:</strong> cost per call is the raw material for showing each team its bill (Module 2 and 3).</li>
+  </ul></div>
+  <div class="slip"><span class="label">Now run</span><code>02_tokens_and_cost.py</code><span class="cmd">uv run modules/00-how-llms-work/02_tokens_and_cost.py</span></div>
+</section>
+
+<hr class="cut">
+<section id="s3" class="prose">
+  <span class="secnum">SECTION 3</span><h2>The context window and the output limit</h2>
+  <div class="eli10"><span class="label">Explain like I'm 10</span><p>The model has a desk. Everything it reads and writes in one go must fit on the desk. Today's desks are huge, but they have edges.</p></div>
+  <p>Two limits apply to every call:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Limit</th><th>What it caps</th><th>Who sets it</th><th>When you hit it</th></tr></thead>
+    <tbody>
+    <tr><td><strong>Context window</strong></td><td>Everything the model reads: system prompt, history, documents</td><td>The model (≈1M tokens here)</td><td>An error, before any answer</td></tr>
+    <tr><td><strong>Max output tokens</strong></td><td>Everything it writes, thinking included</td><td>You, per call</td><td>A cut-off answer with <code>finish_reason="length"</code></td></tr>
+    </tbody></table></div>
+  <p>A million tokens holds thousands of our invoices, so "will it fit?" is rarely the real question. Cost is, and so is <em>attention</em>: models miss things buried in the middle of very long prompts. Deciding what goes on the desk is <em>context engineering</em> (Module 8).</p>
+  <p>The output limit is the sneaky one. A cut-off answer still <em>looks</em> like an answer. Always check <code>finish_reason</code>, and leave headroom for thinking. DocuMind defaults to 2,000 output tokens.</p>
+  <div class="slip"><span class="label">Now run</span><code>03_context_window.py</code><span class="cmd">uv run modules/00-how-llms-work/03_context_window.py</span></div>
+</section>
+
+<hr class="cut">
+<section id="s4" class="prose">
+  <span class="secnum">SECTION 4</span><h2>The model has no memory</h2>
+  <div class="eli10"><span class="label">Explain like I'm 10</span><p>Every request is a phone call to someone with no memory. If you want them to know something, you say it again on every call.</p></div>
+  <p>Tell the model a fact, then ask about it in a new request: it has no idea. Chat apps seem to remember only because they <strong>resend the whole conversation</strong> on every turn. Memory is paid for in input tokens on every message, and a long chat eventually overflows the context window.</p>
+  <figure><div class="svg-wrap"><svg viewBox="0 0 720 200" role="img" aria-labelledby="d4t"><title id="d4t">What is sent on each request: memory means resending history</title><defs>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead"/></marker>
+<marker id="ah-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead-accent"/></marker>
+<marker id="ah-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead-warn"/></marker>
+</defs>
+<text class="t-small" x="160" y="22">what the app sends</text><text class="t-small" x="560" y="22">what the model says</text>
+<text x="20" y="58">request 1</text>
+<rect class="bar-soft" x="160" y="40" width="120" height="28" rx="3"/><text x="172" y="59">fact</text>
+<text x="560" y="59">"Noted."</text>
+<text x="20" y="108">request 2</text>
+<rect class="bar-soft" x="160" y="90" width="120" height="28" rx="3"/><text x="172" y="109">question</text>
+<text x="560" y="109">"I don't know"</text>
+<text x="20" y="158">request 3</text>
+<rect class="bar-soft" x="160" y="140" width="120" height="28" rx="3"/><text x="172" y="159">fact</text>
+<rect class="bar-soft" x="284" y="140" width="120" height="28" rx="3"/><text x="296" y="159">its reply</text>
+<rect class="bar-soft" x="408" y="140" width="120" height="28" rx="3"/><text x="420" y="159">question</text>
+<text x="560" y="159">"$1,101.60"</text>
+<text class="t-small" x="160" y="190">request 3 sends several times the input tokens of request 2: memory is paid every turn</text>
+</svg></div><figcaption>Request 3 works only because the app sent the history again.</figcaption></figure>
+  <p>This is the most important idea in the course. RAG (Module 7), tool calling (Module 11) and agents (Module 13) are all clever ways of deciding <em>what to put in the next request</em>.</p>
+  <div class="slip"><span class="label">Now run</span><code>04_no_memory.py</code><span class="cmd">uv run modules/00-how-llms-work/04_no_memory.py</span></div>
+</section>
+
+<hr class="cut">
+<section id="s5" class="prose">
+  <span class="secnum">SECTION 5</span><h2>Same question, different answers</h2>
+  <div class="eli10"><span class="label">Explain like I'm 10</span><p>The model rolls dice each time it picks the next word, so it rarely says exactly the same thing twice.</p></div>
+  <p>The model picks each next token with some randomness, so one prompt gives different wording on each run. "I tried it once and it worked" proves very little. Older tutorials turned randomness down with <code>temperature=0</code>. Current Claude models reject that setting, and the script shows the rejection.</p>
+  <p>So where does consistency come from? From <strong>clear prompts and structured output</strong> (Module 1), and you prove it with <strong>evals</strong> (Module 9), not with a knob.</p>
+  <div class="slip"><span class="label">Now run</span><code>05_same_question_twice.py</code><span class="cmd">uv run modules/00-how-llms-work/05_same_question_twice.py</span></div>
+</section>
+
+<hr class="cut">
+<section id="s6" class="prose">
+  <span class="secnum">SECTION 6</span><h2>The app: summarize a document</h2>
+  <p>DocuMind's first feature summarizes a text invoice or receipt. Compared with the bare call in Section 1, the app adds three habits: check the input cheaply first, keep prompts out of code, and report what every call cost.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>File</th><th>Its one job</th><th>Habit it shows</th></tr></thead>
+    <tbody>
+    <tr><td class="files">documind/settings.yaml</td><td>Every setting</td><td>Nothing hard-coded; env vars override it</td></tr>
+    <tr><td class="files">documind/config.py</td><td>Loads settings and the keys in <code>.env</code></td><td>Keys stay out of settings and out of logs</td></tr>
+    <tr><td class="files">documind/documents.py</td><td>Checks the file</td><td>Cheap checks before an expensive call</td></tr>
+    <tr><td class="files">documind/prompts/*.md</td><td>The prompt text</td><td>Prompts are reviewed and versioned like code</td></tr>
+    <tr><td class="files">documind/summarize.py</td><td>The feature</td><td>Messages in, result out</td></tr>
+    <tr><td class="files">documind/llm.py</td><td>Makes the call</td><td>Model, tokens, cost and time on every answer</td></tr>
+    </tbody></table></div>
+  <p>You'll notice <code>llm.py</code> already talks about <em>aliases</em> such as <code>fast</code>. For now, read <code>chat(messages)</code> as "send these messages to the model". Module 2 opens it up.</p>
+<pre><code>uv run python -m documind summarize data/receipts/RCPT-3002-handy-hardware.txt</code></pre>
+  <div class="slip"><span class="label">Now run</span><code>06_summarize.py</code><span class="cmd">uv run modules/00-how-llms-work/06_summarize.py</span></div>
+</section>
+
+<hr class="cut">
+<section id="check" class="prose">
+  <span class="secnum">BREAK IT</span><h2>Four experiments</h2>
+  <div class="breakit"><span class="label">99_break_it.py · predict first</span><ul>
+    <li><strong>A PDF:</strong> refused by a cheap check, before any money is spent.</li>
+    <li><strong>A 60,000-character file:</strong> the same guardrail, on size.</li>
+    <li><strong>A wrong API key:</strong> what an authentication failure looks like.</li>
+    <li><strong>"Which invoices did we get yesterday?"</strong> The model only knows its training data and what you send it.</li>
+  </ul></div>
+  <div class="slip"><span class="label">Now run</span><code>99_break_it.py</code><span class="cmd">uv run modules/00-how-llms-work/99_break_it.py</span></div>
+
+  <span class="secnum" style="margin-top:2.4rem">CHECKPOINT</span><h2>Can you explain it?</h2>
+  <p>Answer each question out loud before opening it.</p>
+  <details><summary>A chat app "remembers" earlier messages. How, if the model is stateless?</summary><p>The app resends the whole conversation with every request, so memory costs input tokens on every turn.</p></details>
+  <details><summary>Why do output tokens matter more than input tokens for cost?</summary><p>They cost about five times as much, and thinking is billed as output too.</p></details>
+  <details><summary>The summary looks complete, but finish_reason is "length". What now?</summary><p>It was cut off. Raise <code>max_output_tokens</code> or ask for less, and always check finish_reason.</p></details>
+  <details><summary>The context window is a million tokens. Why not send every document every time?</summary><p>Cost and speed grow with every token, and models miss details buried in long prompts. Send the few documents that matter (RAG, Module 7).</p></details>
+  <details><summary>A teammate says "I ran it and it worked." What do you ask?</summary><p>How many times, on which documents? Outputs vary per run, so you need a set of known answers and a score (Modules 1 and 9).</p></details>
+
+  <h3>Glossary</h3>
+  <dl class="glossary">
+    <dt>token</dt><dd>A small piece of text (about four characters) the model reads and writes; the unit of cost.</dd>
+    <dt>context window</dt><dd>The most tokens a model can read in one request.</dd>
+    <dt>max output tokens</dt><dd>Your cap on what it may write in one request, thinking included.</dd>
+    <dt>finish_reason</dt><dd><code>stop</code>: the answer finished. <code>length</code>: it was cut off.</dd>
+    <dt>stateless</dt><dd>The model keeps nothing between requests; the app must resend context.</dd>
+    <dt>LiteLLM</dt><dd>A library that calls every vendor through one format; Module 2's gateway.</dd>
+    <dt>practice mode</dt><dd>Canned replies, for free offline practice and tests.</dd>
+  </dl>
+</section>
+
+<p class="next">Next → Module 1: prompt engineering and structured output. DocuMind stops summarizing and starts extracting fields as validated JSON.</p>
+</div>
+</body>
+</html>

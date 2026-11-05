@@ -1,0 +1,21 @@
+STARK SPORTS GOODS PVT LTD
+Plot 7, Example Industrial Area, Meerut, UP (fictional)
+GSTIN: 09AAAAA0000A1Z5
+
+                         TAX INVOICE
+Invoice No: INV-5120             Invoice Date: 28-Sep-2026
+Place of supply: Uttar Pradesh   Due Date: 28-Oct-2026
+
+Buyer: Northwind Analytics India LLP, Noida
+
+Sr  Description                      HSN    Qty   Rate (₹)     Amount (₹)
+1   Cricket bat (English willow)     9506     3   8,500.00      25,500.00
+2   Batting gloves (pair)            9506     6   1,200.00       7,200.00
+3   Cricket balls (box of 6)         9506     4   1,850.00       7,400.00
+
+                                   Taxable value     40,100.00
+                                   CGST @ 9%          3,609.00
+                                   SGST @ 9%          3,609.00
+                                   Grand total (₹)   47,318.00
+
+Amount in words: Forty-seven thousand three hundred eighteen rupees only.

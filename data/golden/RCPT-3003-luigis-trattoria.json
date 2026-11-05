@@ -1,0 +1,40 @@
+{
+  "document": "RCPT-3003-luigis-trattoria.txt",
+  "doc_type": "receipt",
+  "fields": {
+    "merchant": "Luigi's Trattoria",
+    "date": "2026-11-01",
+    "currency": "USD",
+    "subtotal": 44.0,
+    "tax": 3.3,
+    "tip": 7.92,
+    "total": 55.22,
+    "payment_method": "card",
+    "items": [
+      {
+        "description": "Margherita Pizza",
+        "quantity": null,
+        "unit_price": null,
+        "amount": 14.0
+      },
+      {
+        "description": "Spaghetti Carbonara",
+        "quantity": null,
+        "unit_price": null,
+        "amount": 16.5
+      },
+      {
+        "description": "Tiramisu",
+        "quantity": null,
+        "unit_price": null,
+        "amount": 7.5
+      },
+      {
+        "description": "Sparkling Water",
+        "quantity": 2,
+        "unit_price": 3.0,
+        "amount": 6.0
+      }
+    ]
+  }
+}

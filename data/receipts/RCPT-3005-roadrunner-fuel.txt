@@ -1,0 +1,15 @@
+ROADRUNNER FUEL #18
+Hwy 401 Exit 12, Exampleville, ON (fictional)
+
+2026-10-30  06:52  PUMP 05
+
+UNLEADED REG
+  38.214 L @ 1.729 /L          66.07
+CAR WASH - BASIC                8.00
+
+SUBTOTAL                       74.07
+HST 13%                         9.63
+TOTAL CAD                      83.70
+
+INTERAC DEBIT  ****0321
+AUTH 004512   APPROVED

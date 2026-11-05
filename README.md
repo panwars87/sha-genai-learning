@@ -1,15 +1,37 @@
 # DocuMind: a GenAI course you build
 
-A hands-on course in GenAI fundamentals that puts concepts first. Module by module you build **DocuMind**, an app that reads invoices and receipts, extracts their fields, and answers questions across them. Along the way: LiteLLM, RAG, embeddings, vector databases, semantic caching, model routing, tool calling and MCP, context engineering, observability, evals, LangChain and LangGraph.
+A hands-on course in GenAI fundamentals that puts concepts first. Module by module you build
+**DocuMind**, an app that reads invoices and receipts, extracts their fields, and answers
+questions across them. Along the way: LiteLLM, prompt engineering, structured output,
+observability, model routing, embeddings, vector databases, RAG, context engineering, evals,
+semantic caching, tool calling and MCP, LangChain and LangGraph.
 
-Each module has an HTML **chapter** to read and a **notebook** to run alongside it, section by section. Setup is two tools (uv, git) and two API keys. There are no servers, no databases and no Docker.
+Each module is a folder with an HTML **chapter** to read and a few short **Python scripts** to run
+alongside it, one per section. Everything runs on your Mac: two tools (uv, git), two API keys,
+no servers, no databases, no Docker.
 
-| Module | Chapter | Notebook |
+## Start
+```bash
+brew install uv
+cp .env.example .env        # paste in ANTHROPIC_API_KEY and OPENAI_API_KEY
+uv sync                     # once
+uv run modules/00-how-llms-work/00_check_setup.py
+```
+Then open `modules/00-how-llms-work/chapter.html` in your browser and follow along.
+
+| Module | Concept | Folder |
 |---|---|---|
-| 00 · Course setup | [read](https://claude.ai/artifact/QaCn2vyZC1yRk8qNPC2rzB) | [00-course-setup.ipynb](modules/00-course-setup/00-course-setup.ipynb) |
-| 01 · LLM basics + AI gateway | [read](https://claude.ai/artifact/AJzEw8t72U7eazv6X1Z4MY) | [01-llm-basics-and-ai-gateway.ipynb](modules/01-llm-basics-and-ai-gateway/01-llm-basics-and-ai-gateway.ipynb) |
+| 0 | How LLMs work: tokens, context window, statelessness | [00-how-llms-work](modules/00-how-llms-work/) |
+| 1 | Prompt engineering + structured output | [01-prompts-and-structured-output](modules/01-prompts-and-structured-output/) |
+| 2 | The LiteLLM gateway: aliases, three vendors, fallbacks, spend cap | [02-litellm-gateway](modules/02-litellm-gateway/) |
+| 3–14 | Observability → … → LangGraph agent → capstone | built one at a time; see [PLAN.md](PLAN.md) |
 
-The chapter links are private artifacts; each is also saved as `chapter.html` in its module folder.
+```
+documind/      the app: one package that grows each module (each file says which module added it)
+modules/       chapters + lesson scripts
+data/          10 made-up documents and their correct answers (data/golden/)
+tests/         offline tests:  uv run pytest
+```
 
-- Plan and module list: [PLAN.md](PLAN.md)
-- How modules are built: [CLAUDE.md](CLAUDE.md)
+- Free practice with no API calls: put `DOCUMIND_GATEWAY__MOCK_RESPONSE="hello"` before any command.
+- Plan and module list: [PLAN.md](PLAN.md) · How modules are built: [CLAUDE.md](CLAUDE.md)

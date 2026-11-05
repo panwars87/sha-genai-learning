@@ -1,0 +1,40 @@
+{
+  "document": "INV-1001-acme-supplies.txt",
+  "doc_type": "invoice",
+  "fields": {
+    "vendor": "Acme Office Supplies Ltd",
+    "invoice_no": "INV-1001",
+    "invoice_date": "2026-09-15",
+    "due_date": "2026-10-15",
+    "currency": "USD",
+    "subtotal": 1020.0,
+    "tax": 81.6,
+    "total": 1101.6,
+    "line_items": [
+      {
+        "description": "A4 Copy Paper (box of 5 reams)",
+        "quantity": 10,
+        "unit_price": 32.0,
+        "amount": 320.0
+      },
+      {
+        "description": "Black Ink Cartridge XL",
+        "quantity": 6,
+        "unit_price": 45.5,
+        "amount": 273.0
+      },
+      {
+        "description": "Ergonomic Office Chair",
+        "quantity": 2,
+        "unit_price": 189.0,
+        "amount": 378.0
+      },
+      {
+        "description": "Whiteboard Markers (pack of 12)",
+        "quantity": 5,
+        "unit_price": 9.8,
+        "amount": 49.0
+      }
+    ]
+  }
+}

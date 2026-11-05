@@ -1,0 +1,50 @@
+# DocuMind settings. The one file to change how the app behaves.
+# Any value can be overridden with an environment variable:
+#   DOCUMIND_<SECTION>__<KEY>     e.g.  DOCUMIND_GATEWAY__DEFAULT_ALIAS=smart
+# API keys never go here. They live in the repo's .env file.
+
+# ── The AI gateway (LiteLLM, used as a library) ── Module 0, opened up in Module 2 ──────
+gateway:
+  # Aliases → real vendor models. The app only ever asks for an alias.
+  # Prices per 1M tokens (in / out), from LiteLLM's price list, checked 2026-11-04:
+  aliases:
+    fast-anthropic: anthropic/claude-haiku-5-5     # $0.10 / $0.50
+    smart-anthropic: anthropic/claude-sonnet-5-5   # $2.00 / $10.00
+    fast-openai: openai/gpt-6-luna                 # $0.10 / $0.50
+    smart-openai: openai/gpt-6.1-sol               # $2.00 / $10.00
+    local: ollama_chat/llama3.2                    # free, on your Mac; optional (needs Ollama)
+  # Short names the app uses. Point them at another vendor without touching code.
+  shortcuts:
+    fast: fast-anthropic
+    smart: smart-anthropic
+  default_alias: fast
+  # If a vendor fails (outage, bad key, rate limit), try these instead, in order.
+  fallbacks:
+    fast-anthropic: [fast-openai]
+    smart-anthropic: [smart-openai]
+  num_retries: 1            # resilience lives in the gateway, not in feature code
+  timeout_seconds: 60
+  # Current models "think" first, and thinking counts toward this limit. Leave headroom.
+  max_output_tokens: 2000
+  # Spend cap for one session (one script or CLI run). Calls stop when it is reached.
+  max_spend_usd: 1.00
+  # Practice mode: set a text here and every call returns it instantly, for free.
+  #   DOCUMIND_GATEWAY__MOCK_RESPONSE="Hello from mock mode"
+  mock_response: null
+
+# ── Features: which alias each one uses ───────────────────────────────────────────────
+features:
+  summarize_alias: fast     # Module 0
+  classify_alias: fast      # Module 1
+  extract_alias: fast       # Module 1
+
+documents:
+  allowed_extensions: [".txt", ".md"]   # PDFs and photos arrive in Module 4
+  max_chars: 50000                       # guardrail against huge (and costly) inputs
+  encoding: utf-8
+
+prompts_dir: prompts
+
+logging:
+  level: WARNING            # INFO shows one line per model call
+  format: "%(asctime)s %(levelname)-7s %(name)s: %(message)s"
