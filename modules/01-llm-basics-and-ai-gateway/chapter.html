@@ -131,17 +131,27 @@ dl.glossary dd { margin: 0; }
 <header class="prose">
   <span class="eyebrow">DocuMind course · Module 01</span>
   <h1>LLM basics and the AI gateway</h1>
-  <p class="lede">You'll learn what an LLM call really is, then put a gateway between DocuMind and every model vendor. By the end, DocuMind summarizes invoices and receipts through LiteLLM, and every answer shows its model, tokens, cost and speed.</p>
-  <div class="meta"><span>~75 min</span><span>7 lessons · 4 experiments</span><span>cost: a few cents</span><span>code: modules/01-llm-basics-and-ai-gateway</span></div>
+  <p class="lede">You'll learn what an LLM call really is, then put a gateway between DocuMind and every model vendor. By the end, DocuMind summarizes invoices and receipts, and every answer shows which model wrote it, how many tokens it used, what it cost and how long it took.</p>
+  <div class="meta"><span>~60 min</span><span>1 notebook · 8 sections · 4 experiments</span><span>cost: a few cents</span></div>
   <nav class="toc" aria-label="Sections"><span class="eyebrow">In this chapter</span>
   <ol>
     <li><a href="#s1">What an LLM call is</a></li><li><a href="#s2">Why a gateway</a></li>
-    <li><a href="#s3">Meet the gateway</a></li><li><a href="#s4">Virtual keys</a></li>
-    <li><a href="#s5">One client, two vendors</a></li><li><a href="#s6">Tokens, cost and knobs</a></li>
-    <li><a href="#s7">The model has no memory</a></li><li><a href="#s8">The app: documind summarize</a></li>
-    <li><a href="#check">Checkpoint and glossary</a></li>
+    <li><a href="#s3">Meet the gateway: aliases</a></li><li><a href="#s4">One client, two vendors</a></li>
+    <li><a href="#s5">Tokens, cost and knobs</a></li><li><a href="#s6">Spend caps</a></li>
+    <li><a href="#s7">The model has no memory</a></li><li><a href="#s8">The app: summarize a document</a></li>
+    <li><a href="#check">Break it, checkpoint and glossary</a></li>
   </ol></nav>
 </header>
+
+<hr class="cut">
+<section id="start" class="prose">
+  <span class="secnum">BEFORE YOU START</span><h2>Open the notebook</h2>
+  <p>Read a section here, then run the same-numbered section of the notebook. On your Mac:</p>
+<pre><code>cd modules/01-llm-basics-and-ai-gateway
+uv run --project app jupyter lab        <span class="c"># first run installs everything (~1 min)</span>
+<span class="c"># then open 01-llm-basics-and-ai-gateway.ipynb</span></code></pre>
+  <p>In Colab, open <code>01-llm-basics-and-ai-gateway.ipynb</code> from GitHub and add your two keys as Colab Secrets. Setting <code>MOCK = True</code> in the first cell gives you free practice with canned replies.</p>
+</section>
 
 <hr class="cut">
 <section id="s1" class="prose">
@@ -172,15 +182,15 @@ dl.glossary dd { margin: 0; }
 <text x="536" y="128">finish_reason</text>
 <text class="t-small" x="300" y="182">no memory between calls</text>
 </svg></div><figcaption>One call. Nothing is stored on the model's side; if you want it to know something, you send it.</figcaption></figure>
-  <p>Lesson L01 makes this call the "old way": straight to Anthropic, with the vendor key inside the program. Notice what's missing when you run it: there's no cost figure, no limit, and the code works with only one vendor.</p>
-  <div class="slip"><span class="label">Code along</span><code>lessons/L01_direct_call_the_old_way.py</code><span class="cmd">uv run --project app python lessons/L01_direct_call_the_old_way.py</span></div>
+  <p>The notebook first makes this call the raw way, naming one vendor's model inside the code. Notice what's missing: there's no cost figure and no limit, and switching vendor means editing code.</p>
+  <div class="slip"><span class="label">Now run</span><code>01-llm-basics-and-ai-gateway.ipynb</code><span class="cmd">Section 1: a raw call to one vendor</span></div>
 </section>
 
 <hr class="cut">
 <section id="s2" class="prose">
   <span class="secnum">SECTION 2</span><h2>Why a gateway</h2>
   <div class="eli10"><span class="label">Explain like I'm 10</span><p>A universal TV remote. One remote works every brand of TV, and only the remote knows the passwords. You press "fast" or "smart"; the remote decides which TV to switch on.</p></div>
-  <p>Picture three teams each calling vendors directly. Each team holds vendor keys, nobody sees total spend, and if a key leaks you hunt for it across every codebase. An <strong>AI gateway</strong> is one service that every app calls instead. DocuMind uses <strong>LiteLLM</strong>, an open-source gateway that speaks the OpenAI-compatible API format that most tools already understand.</p>
+  <p>Picture three teams each calling vendors directly. Each team holds vendor keys, nobody sees total spend, and if a key leaks you hunt for it across every codebase. An <strong>AI gateway</strong> is the one place every request goes through. DocuMind uses <strong>LiteLLM</strong>, which speaks one format to every vendor.</p>
   <figure><div class="svg-wrap"><svg viewBox="0 0 720 290" role="img" aria-labelledby="d2t"><title id="d2t">Apps calling vendors directly, compared with apps calling one gateway</title><defs>
 <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead"/></marker>
 <marker id="ah-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead-accent"/></marker>
@@ -203,7 +213,7 @@ dl.glossary dd { margin: 0; }
 <rect class="box" x="380" y="170" width="100" height="36" rx="5"/><text x="392" y="193">App C</text>
 <rect class="box-accent" x="515" y="60" width="90" height="136" rx="6"/>
 <text class="t-head" x="527" y="104">LiteLLM</text><text x="527" y="124">gateway</text>
-<text class="t-small" x="527" y="150">vendor keys</text><text class="t-small" x="527" y="166">live here</text>
+<text class="t-small" x="527" y="150">vendor keys</text><text class="t-small" x="527" y="166">used only here</text>
 <line class="line-accent" x1="480" y1="68" x2="512" y2="100" marker-end="url(#ah-a)"/>
 <line class="line-accent" x1="480" y1="128" x2="512" y2="128" marker-end="url(#ah-a)"/>
 <line class="line-accent" x1="480" y1="188" x2="512" y2="158" marker-end="url(#ah-a)"/>
@@ -213,32 +223,33 @@ dl.glossary dd { margin: 0; }
 <line class="line" x1="605" y1="158" x2="623" y2="166" marker-end="url(#ah)"/>
 <text class="t-small" x="380" y="240">apps hold only virtual keys + aliases</text>
 <text class="t-small" x="380" y="258">one place for budgets, cost, retries, revocation</text>
-</svg></div><figcaption>Left: every app is wired to every vendor. Right: apps talk to one gateway; vendor keys exist in exactly one place.</figcaption></figure>
+</svg></div><figcaption>Left: every app is wired to every vendor. Right: apps go through one gateway, and vendor keys are used in one place.</figcaption></figure>
   <div class="table-wrap"><table>
     <thead><tr><th>Concern</th><th>Direct to vendor</th><th>Through the gateway</th></tr></thead>
     <tbody>
-    <tr><td>Vendor keys</td><td>In every app</td><td>Only in the gateway</td></tr>
-    <tr><td>Switching vendor</td><td>Code change in every app</td><td>Edit one alias in config</td></tr>
-    <tr><td>Spend control</td><td>A bill at month end</td><td>Budget per key, enforced before the call</td></tr>
-    <tr><td>Leaked key</td><td>Rotate the vendor key everywhere</td><td>Revoke one virtual key</td></tr>
+    <tr><td>Model names</td><td>Scattered through code</td><td>Aliases like <code>fast</code> and <code>smart</code>, in one config file</td></tr>
+    <tr><td>Switching vendor</td><td>Code change everywhere</td><td>Edit one line of config</td></tr>
     <tr><td>Cost per call</td><td>Not visible</td><td>Returned with every answer</td></tr>
+    <tr><td>Spend control</td><td>A bill at month end</td><td>A cap, checked before each call</td></tr>
+    <tr><td>Approved models</td><td>Anything goes</td><td>Only the listed aliases work</td></tr>
     <tr><td>Retries, fallbacks</td><td>Rewritten in each app</td><td>Configured once (Module 04)</td></tr>
     </tbody></table></div>
+  <p><strong>Library or server?</strong> In this course LiteLLM runs as a <em>library</em> inside DocuMind, so there is nothing to install or keep running. In a company, the same LiteLLM usually runs as a shared <em>server</em> that every team calls. The concepts are identical; only where it runs changes.</p>
   <div class="director"><span class="label">At enterprise scale</span>
   <p>In a bank, the gateway is a shared platform service, and these are the questions to ask of it:</p>
   <ul>
     <li><strong>Secrets:</strong> vendor keys live in a secrets manager (for example HashiCorp Vault or AWS Secrets Manager), are injected at deploy, and rotate without any app noticing.</li>
-    <li><strong>Identity:</strong> apps authenticate with SSO or service identities; there is one virtual key per app per environment, never a personal key in production.</li>
+    <li><strong>Identity:</strong> apps authenticate with SSO or service identities, and each gets its own <em>virtual key</em> per environment (Section 6).</li>
     <li><strong>Chargeback:</strong> spend per key and per team feeds finance; budgets and requests-per-minute limits are set per team.</li>
     <li><strong>Policy:</strong> an approved-model list per data classification, data-residency and retention terms per vendor, and an audit log of every call.</li>
-    <li><strong>Resilience:</strong> several gateway replicas behind a load balancer, sharing Postgres and Redis. The gateway is now on the critical path, so it needs an SLO.</li>
+    <li><strong>Resilience:</strong> several gateway replicas behind a load balancer. The gateway is now on the critical path, so it needs an SLO.</li>
   </ul></div>
 </section>
 
 <hr class="cut">
 <section id="s3" class="prose">
-  <span class="secnum">SECTION 3</span><h2>Meet the gateway</h2>
-  <p>The gateway's behaviour lives in one file, <code>gateway/config.yaml</code>. Its heart is the <strong>alias table</strong>: the names apps may ask for, and the real model behind each one.</p>
+  <span class="secnum">SECTION 3</span><h2>Meet the gateway: aliases</h2>
+  <p>The gateway's behaviour lives in <code>app/config/settings.yaml</code>. Its heart is the <strong>alias table</strong>: the only model names DocuMind may ask for, and the real model behind each one.</p>
   <div class="table-wrap"><table>
     <thead><tr><th>Alias the app uses</th><th>Real model</th><th class="num">$ / 1M input</th><th class="num">$ / 1M output</th></tr></thead>
     <tbody>
@@ -247,28 +258,51 @@ dl.glossary dd { margin: 0; }
     <tr><td><code>fast-openai</code></td><td>GPT-6 Luna</td><td class="num">0.10</td><td class="num">0.50</td></tr>
     <tr><td><code>smart-openai</code></td><td>GPT-6.1 Sol</td><td class="num">2.00</td><td class="num">10.00</td></tr>
     </tbody></table></div>
-  <p>Prices are from LiteLLM's built-in price list as of November 2026. Vendors change them, and the config file notes when they were last checked.</p>
-<pre><code><span class="c"># gateway/config.yaml (excerpt)</span>
-model_list:
-  - model_name: fast-anthropic              <span class="c"># the alias</span>
-    litellm_params:
-      model: anthropic/claude-haiku-5-5     <span class="c"># the real model</span>
-      api_key: os.environ/ANTHROPIC_API_KEY <span class="c"># read from the gateway's environment</span>
-router_settings:
-  model_group_alias: {fast: fast-anthropic, smart: smart-anthropic}
-general_settings:
-  master_key: os.environ/LITELLM_MASTER_KEY
-  database_url: os.environ/DATABASE_URL     <span class="c"># where virtual keys and spend live</span></code></pre>
-  <p>Start it in its own terminal and leave it running. <code>make gateway-mock</code> starts the same gateway with canned replies: no vendor calls and no cost, but keys, budgets and cost headers still work. It's good for learning the plumbing.</p>
-  <div class="slip"><span class="label">Code along</span><code>lessons/L03_gateway_health.py</code><span class="cmd">make gateway MODULE=01          # terminal 1 (or make gateway-mock MODULE=01)
-uv run --project app python lessons/L03_gateway_health.py</span></div>
+  <p>Prices are from LiteLLM's built-in price list as of November 2026. Vendors change them.</p>
+<pre><code><span class="c"># app/config/settings.yaml (excerpt)</span>
+gateway:
+  aliases:
+    fast-anthropic: anthropic/claude-haiku-5-5   <span class="c"># alias → real model</span>
+    fast-openai: openai/gpt-6-luna
+  shortcuts:
+    fast: fast-anthropic                         <span class="c"># what feature code asks for</span>
+  num_retries: 2
+  max_spend_usd: 1.00                            <span class="c"># per session (Section 6)</span></code></pre>
+  <div class="slip"><span class="label">Now run</span><code>01-llm-basics-and-ai-gateway.ipynb</code><span class="cmd">Section 3: print the alias table, then make the same call through the gateway</span></div>
 </section>
 
 <hr class="cut">
 <section id="s4" class="prose">
-  <span class="secnum">SECTION 4</span><h2>Virtual keys</h2>
-  <div class="eli10"><span class="label">Explain like I'm 10</span><p>The master key is the head teacher's key ring. A virtual key is a hall pass: it opens only certain doors, runs out after a set amount, and the head teacher can cancel it at any time.</p></div>
-  <p>You are now the platform admin. With the master key you issue DocuMind its own <strong>virtual key</strong>. It may use only the listed aliases, may spend $2 every 30 days, and can be revoked instantly. The gateway records the key and its spend in Postgres. DocuMind stores this key as <code>DOCUMIND_API_KEY</code> and never sees a vendor key.</p>
+  <span class="secnum">SECTION 4</span><h2>One client, two vendors</h2>
+  <p>The same function sends the same prompt to Anthropic and then to OpenAI. Only the alias string changes, from <code>fast-anthropic</code> to <code>fast-openai</code>. Compare the answers, token counts, cost and speed side by side.</p>
+  <p>This is <strong>vendor independence</strong> in practice. In Module 04 the same idea gives you automatic fallback: if one vendor is down, the gateway quietly uses the other.</p>
+  <div class="slip"><span class="label">Now run</span><code>01-llm-basics-and-ai-gateway.ipynb</code><span class="cmd">Section 4: Anthropic and OpenAI, side by side</span></div>
+</section>
+
+<hr class="cut">
+<section id="s5" class="prose">
+  <span class="secnum">SECTION 5</span><h2>Tokens, cost and knobs</h2>
+  <p><strong>Tokens are the unit of cost.</strong> English text averages about four characters per token. Output tokens cost about five times as much as input tokens, so long answers are the expensive part. Current models also <strong>think</strong> before answering, and thinking tokens are billed as output and count toward the output limit.</p>
+  <h3>A worked example</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Summarize INV-1001</th><th class="num">Tokens</th><th class="num">fast (Haiku 5.5)</th><th class="num">smart (Sonnet 5.5)</th></tr></thead>
+    <tbody>
+    <tr><td>Input: prompt + invoice</td><td class="num">≈ 420</td><td class="num">$0.000042</td><td class="num">$0.000840</td></tr>
+    <tr><td>Output: thinking + summary</td><td class="num">≈ 300</td><td class="num">$0.000150</td><td class="num">$0.003000</td></tr>
+    <tr><td><strong>One invoice</strong></td><td class="num"></td><td class="num">$0.00019</td><td class="num">$0.0038</td></tr>
+    <tr><td><strong>10,000 invoices / month</strong></td><td class="num"></td><td class="num">$1.92</td><td class="num">$38.40</td></tr>
+    </tbody></table></div>
+  <p>The same job costs 20 times more on the smart model. The notebook repeats this sum with your real token counts. Choosing the right model per task is <em>model routing</em>, the subject of Module 04.</p>
+  <h3>The same question, different answers</h3>
+  <p>The model picks each next token with some randomness, so the same prompt can give different wording on each run. Older tutorials set <code>temperature=0</code> to reduce this. Current Claude models no longer accept temperature, and the notebook shows the rejection. You get consistency from clear prompts and structured output (Module 02), and you prove it with evals (Module 09), not with a knob.</p>
+  <div class="slip"><span class="label">Now run</span><code>01-llm-basics-and-ai-gateway.ipynb</code><span class="cmd">Section 5: tokens, a monthly bill, repeat runs, temperature</span></div>
+</section>
+
+<hr class="cut">
+<section id="s6" class="prose">
+  <span class="secnum">SECTION 6</span><h2>Spend caps</h2>
+  <div class="eli10"><span class="label">Explain like I'm 10</span><p>Pocket money. When it's spent, it's spent, however many times you ask.</p></div>
+  <p>In a company, the shared gateway's admin holds a master key and issues each app its own <strong>virtual key</strong>. A virtual key may use only certain aliases, has a budget, and can be revoked in seconds without touching any other app. Every request is checked against its budget <em>before</em> any vendor is called.</p>
   <figure><div class="svg-wrap"><svg viewBox="0 0 720 230" role="img" aria-labelledby="d3t"><title id="d3t">One master key issues scoped virtual keys</title><defs>
 <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead"/></marker>
 <marker id="ah-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead-accent"/></marker>
@@ -292,43 +326,9 @@ uv run --project app python lessons/L03_gateway_health.py</span></div>
 <text class="t-head" x="504" y="156">leaked-key</text>
 <text class="t-small" x="504" y="176">revoked by the admin</text>
 <text class="t-small" x="504" y="194">next call → HTTP 401</text>
-</svg></div><figcaption>One admin key, many scoped app keys. Revoking one affects nothing else.</figcaption></figure>
-  <div class="slip"><span class="label">Code along</span><code>lessons/L04_create_virtual_key.py</code><span class="cmd">uv run --project app python lessons/L04_create_virtual_key.py      # then add DOCUMIND_API_KEY=... to .env</span></div>
-  <div class="breakit"><span class="label">Break it</span><ul>
-    <li><code>experiments/E01_revoked_key.py</code>: revoke a key mid-session and watch access stop at once.</li>
-    <li><code>experiments/E02_budget_exceeded.py</code>: a $0 budget; the gateway refuses before any vendor is called.</li>
-    <li><code>experiments/E04_model_not_allowed.py</code>: a key limited to <code>fast</code> asks for <code>smart</code>.</li>
-  </ul></div>
-</section>
-
-<hr class="cut">
-<section id="s5" class="prose">
-  <span class="secnum">SECTION 5</span><h2>One client, two vendors</h2>
-  <p>The gateway speaks the OpenAI-compatible format, so DocuMind uses the standard <code>openai</code> Python client, pointed at <code>http://localhost:4000</code> instead of OpenAI. With the same client, the same key and the same prompt, only the alias string changes, from <code>fast-anthropic</code> to <code>fast-openai</code>. Run L05 and compare the answers, token counts, cost and speed side by side.</p>
-  <p>This is what <strong>vendor independence</strong> means in practice. In Module 04 the same idea gives you automatic fallback: if one vendor is down, the gateway quietly uses the other.</p>
-  <div class="slip"><span class="label">Code along</span><code>lessons/L05_one_client_two_vendors.py</code><span class="cmd">uv run --project app python lessons/L05_one_client_two_vendors.py</span></div>
-</section>
-
-<hr class="cut">
-<section id="s6" class="prose">
-  <span class="secnum">SECTION 6</span><h2>Tokens, cost and knobs</h2>
-  <p><strong>Tokens are the unit of cost.</strong> English text averages about four characters per token. Output tokens cost about five times as much as input tokens, so long answers are the expensive part. Current models also <strong>think</strong> before answering, and thinking tokens are billed as output and count toward <code>max_output_tokens</code>.</p>
-  <h3>A worked example</h3>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Summarize INV-1001</th><th class="num">Tokens</th><th class="num">fast (Haiku 5.5)</th><th class="num">smart (Sonnet 5.5)</th></tr></thead>
-    <tbody>
-    <tr><td>Input: prompt + invoice</td><td class="num">≈ 420</td><td class="num">$0.000042</td><td class="num">$0.000840</td></tr>
-    <tr><td>Output: thinking + summary</td><td class="num">≈ 300</td><td class="num">$0.000150</td><td class="num">$0.003000</td></tr>
-    <tr><td><strong>One invoice</strong></td><td class="num"></td><td class="num">$0.00019</td><td class="num">$0.0038</td></tr>
-    <tr><td><strong>10,000 invoices / month</strong></td><td class="num"></td><td class="num">$1.92</td><td class="num">$38.40</td></tr>
-    </tbody></table></div>
-  <p>The same job costs 20 times more on the smart model. Choosing the right model per task is <em>model routing</em>, the subject of Module 04.</p>
-  <h3>The same question, different answers</h3>
-  <p>The model picks each next token with some randomness, so the same prompt can give different wording on each run. Older tutorials set <code>temperature=0</code> to reduce this. Current Claude models no longer accept temperature, and L06 shows the gateway rejecting it. You get consistency from clear prompts and structured output (Module 02), and you prove it with evals (Module 09), not with a knob.</p>
-  <div class="slip"><span class="label">Code along</span><code>lessons/L06_tokens_cost_and_knobs.py</code><span class="cmd">uv run --project app python lessons/L06_tokens_cost_and_knobs.py</span></div>
-  <div class="breakit"><span class="label">Break it</span><ul>
-    <li><code>experiments/E03_answer_cut_off.py</code>: allow only 16 output tokens. The answer is cut off and <code>finish_reason</code> becomes <code>"length"</code>. It needs real models.</li>
-  </ul></div>
+</svg></div><figcaption>How a company gateway does it: one admin key, many scoped app keys. Revoking one affects nothing else.</figcaption></figure>
+  <p>DocuMind keeps the same idea in miniature. A <strong>spend tracker</strong> adds up the cost of every call in the session and refuses the next call once <code>max_spend_usd</code> is reached. The unknown-alias check plays the part of a key's allowed-models list.</p>
+  <div class="slip"><span class="label">Now run</span><code>01-llm-basics-and-ai-gateway.ipynb</code><span class="cmd">Section 6: watch a tiny cap stop the second call</span></div>
 </section>
 
 <hr class="cut">
@@ -355,68 +355,75 @@ uv run --project app python lessons/L03_gateway_health.py</span></div>
 <text class="t-small" x="160" y="190">request 3 sends several times the input tokens of request 2: memory is paid every turn</text>
 </svg></div><figcaption>Request 3 works only because the app sent the history again.</figcaption></figure>
   <p>Deciding what to send, and what to leave out, is <em>context engineering</em> (Module 08).</p>
-  <div class="slip"><span class="label">Code along</span><code>lessons/L07_statelessness_and_memory.py</code><span class="cmd">uv run --project app python lessons/L07_statelessness_and_memory.py</span></div>
+  <div class="slip"><span class="label">Now run</span><code>01-llm-basics-and-ai-gateway.ipynb</code><span class="cmd">Section 7: three requests, with and without history</span></div>
 </section>
 
 <hr class="cut">
 <section id="s8" class="prose">
-  <span class="secnum">SECTION 8</span><h2>The app: documind summarize</h2>
-  <p>The DocuMind snapshot for this module does one thing well: it summarizes a text invoice or receipt. Each file has one job, and only <code>gateway.py</code> talks to the gateway.</p>
-  <figure><div class="svg-wrap"><svg viewBox="0 0 720 160" role="img" aria-labelledby="d5t"><title id="d5t">How documind summarize travels through the code</title><defs>
+  <span class="secnum">SECTION 8</span><h2>The app: summarize a document</h2>
+  <p>DocuMind's snapshot for this module does one thing: it summarizes a text invoice or receipt. Each file has one job, and only <code>llm.py</code> talks to the gateway.</p>
+  <figure><div class="svg-wrap"><svg viewBox="0 0 720 160" role="img" aria-labelledby="d5t"><title id="d5t">How a summary request travels through DocuMind</title><defs>
 <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead"/></marker>
 <marker id="ah-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead-accent"/></marker>
 <marker id="ah-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead-warn"/></marker>
 </defs>
-<rect class="box" x="10" y="20" width="120" height="44" rx="5"/><text x="24" y="47">cli.py</text>
+<rect class="box" x="10" y="20" width="120" height="44" rx="5"/><text x="24" y="47">__main__.py</text>
 <rect class="box" x="155" y="20" width="120" height="44" rx="5"/><text x="169" y="47">summarize.py</text>
-<rect class="box" x="300" y="20" width="120" height="44" rx="5"/><text x="314" y="47">gateway.py</text>
-<rect class="box-accent" x="445" y="20" width="120" height="44" rx="5"/><text x="459" y="47">LiteLLM :4000</text>
+<rect class="box" x="300" y="20" width="120" height="44" rx="5"/><text x="314" y="47">llm.py</text>
+<rect class="box-accent" x="445" y="20" width="120" height="44" rx="5"/><text x="459" y="47">LiteLLM</text>
 <rect class="box" x="590" y="20" width="120" height="44" rx="5"/><text x="604" y="47">Anthropic</text>
 <line class="line" x1="130" y1="42" x2="152" y2="42" marker-end="url(#ah)"/>
 <line class="line" x1="275" y1="42" x2="297" y2="42" marker-end="url(#ah)"/>
 <line class="line" x1="420" y1="42" x2="442" y2="42" marker-end="url(#ah)"/>
 <line class="line" x1="565" y1="42" x2="587" y2="42" marker-end="url(#ah)"/>
-<text class="t-small" x="155" y="84">+ documents.py</text><text class="t-small" x="155" y="100">+ prompts.py</text>
-<text class="t-small" x="300" y="84">virtual key</text><text class="t-small" x="300" y="100">+ alias "fast"</text>
+<text class="t-small" x="155" y="84">+ documents.py</text><text class="t-small" x="155" y="100">+ prompts/*.md</text>
+<text class="t-small" x="300" y="84">alias "fast"</text><text class="t-small" x="300" y="100">+ spend check</text>
 <text class="t-small" x="445" y="84">vendor key</text><text class="t-small" x="445" y="100">+ real model</text>
 <path class="line-accent" d="M650 66 V128 H70 V70" stroke-dasharray="5 4" marker-end="url(#ah-a)"/>
-<text class="t-small" x="250" y="146">answer + cost, model and latency headers come back</text>
-</svg></div><figcaption>The path of one request. The vendor key is used only inside the highlighted gateway box.</figcaption></figure>
+<text class="t-small" x="250" y="146">answer + model, tokens, cost and latency come back</text>
+</svg></div><figcaption>The path of one request. The vendor key is used only inside the highlighted LiteLLM box.</figcaption></figure>
   <div class="table-wrap"><table>
-    <thead><tr><th>File</th><th>Its one job</th><th>Production habit it shows</th></tr></thead>
+    <thead><tr><th>File</th><th>Its one job</th><th>Habit it shows</th></tr></thead>
     <tbody>
-    <tr><td><code>config/settings.yaml</code> + <code>config.py</code></td><td>Every setting, typed and validated</td><td>No hard-coding; environment overrides YAML; secrets only from the environment</td></tr>
-    <tr><td><code>prompts/*.md</code> + <code>prompts.py</code></td><td>Prompt templates</td><td>Prompts are reviewed and versioned like code</td></tr>
-    <tr><td><code>documents.py</code></td><td>Load and check the file</td><td>Cheap guardrails before an expensive call</td></tr>
-    <tr><td><code>gateway.py</code></td><td>The only door to the gateway</td><td>Clear errors that say how to fix them; cost and model on every reply</td></tr>
-    <tr><td><code>summarize.py</code></td><td>The feature</td><td>Messages in, result out; easy to test</td></tr>
-    <tr><td><code>cli.py</code></td><td>Thin command-line shell</td><td>The same feature can sit behind an API or UI later</td></tr>
-    <tr><td><code>tests/</code></td><td>Offline tests with a fake gateway</td><td>Tests never spend money or need a network</td></tr>
+    <tr><td><code>config/settings.yaml</code></td><td>Every setting: aliases, limits, spend cap</td><td>Nothing hard-coded; environment variables override it</td></tr>
+    <tr><td><code>prompts/*.md</code></td><td>The prompt text</td><td>Prompts are reviewed and versioned like code</td></tr>
+    <tr><td><code>documind/config.py</code></td><td>Loads and validates settings</td><td>Keys stay in <code>.env</code>, never in settings</td></tr>
+    <tr><td><code>documind/llm.py</code></td><td>The gateway</td><td>Aliases, cost, spend cap, errors that say how to fix them</td></tr>
+    <tr><td><code>documind/documents.py</code></td><td>Checks the file</td><td>Cheap checks before an expensive call</td></tr>
+    <tr><td><code>documind/summarize.py</code></td><td>The feature</td><td>Messages in, result out</td></tr>
+    <tr><td><code>tests/</code></td><td>Offline tests</td><td>Tests never spend money (they use mock mode)</td></tr>
     </tbody></table></div>
-  <div class="slip"><span class="label">Code along</span><code>app/</code><span class="cmd">uv run --project app documind summarize ../../data/invoices/INV-1001-acme-supplies.txt
-make test MODULE=01 &amp;&amp; make lint MODULE=01     # from the repo root</span></div>
+  <div class="slip"><span class="label">Now run</span><code>01-llm-basics-and-ai-gateway.ipynb</code><span class="cmd">Section 8: summarize two documents, then the same from the command line</span></div>
 </section>
 
 <hr class="cut">
 <section id="check" class="prose">
-  <span class="secnum">CHECKPOINT</span><h2>Can you explain it?</h2>
-  <p>Answer each question out loud before opening it. The same quiz is in the module README.</p>
+  <span class="secnum">BREAK IT</span><h2>Four experiments</h2>
+  <div class="breakit"><span class="label">At the end of the notebook</span><ul>
+    <li><strong>The answer gets cut off:</strong> 16 output tokens for a long question, so <code>finish_reason</code> becomes <code>"length"</code>.</li>
+    <li><strong>An unapproved model:</strong> feature code asks for <code>gpt-4</code> and the gateway refuses it.</li>
+    <li><strong>Switch vendor with config only:</strong> point <code>fast</code> at OpenAI and rerun the unchanged feature.</li>
+    <li><strong>A wrong API key:</strong> see what an authentication failure looks like.</li>
+  </ul></div>
+
+  <span class="secnum" style="margin-top:2.4rem">CHECKPOINT</span><h2>Can you explain it?</h2>
+  <p>Answer each question out loud before opening it. The same questions close the notebook.</p>
   <details><summary>A chat app "remembers" earlier messages. How, if the model is stateless?</summary><p>The app resends the whole conversation with every request, so memory costs input tokens on every turn.</p></details>
-  <details><summary>Name three things the gateway gives you that direct vendor calls don't.</summary><p>Vendor keys kept out of apps; vendor swaps through aliases; budgets enforced before the call; instant revocation; cost and latency per call; central retries. Any three.</p></details>
-  <details><summary>Master key vs virtual key?</summary><p>The master key is the admin's root key and issues or revokes keys. A virtual key belongs to one app: it is scoped to certain aliases, has a budget, and can be revoked on its own.</p></details>
-  <details><summary>The summary looks complete, but finish_reason is "length". What now?</summary><p>The model hit the output limit, and thinking tokens count toward it. Raise <code>max_output_tokens</code> or ask for a shorter answer, and always check finish_reason.</p></details>
-  <details><summary>A team wants to cut cost by 20x on 10,000 invoices a month. What is your first question?</summary><p>Does the fast model's quality hold for this task? Answering that needs evals, not gut feel. Routing (Module 04) and evals (Module 09) turn the question into a measured decision.</p></details>
+  <details><summary>Name three things a gateway gives you that direct vendor calls don't.</summary><p>Aliases (switch vendor by config), one format for all vendors, cost and latency per call, spend caps, an approved-model list, retries and fallbacks. Any three.</p></details>
+  <details><summary>In a company, how is a spend cap usually enforced?</summary><p>The shared gateway gives each app or team a virtual key with a budget, and checks it before calling the vendor.</p></details>
+  <details><summary>The summary looks complete, but finish_reason is "length". What now?</summary><p>It was cut off, and thinking tokens count toward the limit. Raise <code>max_output_tokens</code> or ask for less, and always check finish_reason.</p></details>
+  <details><summary>A team wants to cut cost 20× on 10,000 invoices a month. What is your first question?</summary><p>Does quality hold on the fast model? Answering that needs evals (Module 09), not a single test.</p></details>
 
   <h3>Glossary</h3>
   <dl class="glossary">
     <dt>token</dt><dd>A small piece of text (about four characters) that the model reads and writes; the unit of cost.</dd>
     <dt>context window</dt><dd>The most tokens a model can read in one request.</dd>
-    <dt>AI gateway</dt><dd>One service that all apps call instead of vendors; here, LiteLLM.</dd>
+    <dt>AI gateway</dt><dd>The one place every model request goes through; here, LiteLLM.</dd>
     <dt>alias</dt><dd>A friendly model name (<code>fast</code>) that the gateway maps to a real model.</dd>
-    <dt>master key</dt><dd>The gateway admin key, used only to issue and revoke keys.</dd>
-    <dt>virtual key</dt><dd>A scoped, budgeted, revocable key for one app.</dd>
+    <dt>virtual key</dt><dd>In a company gateway: a scoped, budgeted, revocable key for one app.</dd>
+    <dt>spend cap</dt><dd>A limit checked before each call; DocuMind's is <code>max_spend_usd</code>.</dd>
     <dt>finish_reason</dt><dd><code>stop</code> means the answer finished; <code>length</code> means it was cut off.</dd>
-    <dt>mock mode</dt><dd>The gateway returns canned replies, for free practice.</dd>
+    <dt>mock mode</dt><dd>Canned replies, for free practice and offline tests.</dd>
   </dl>
 </section>
 

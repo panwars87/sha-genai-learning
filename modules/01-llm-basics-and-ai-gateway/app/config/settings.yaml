@@ -1,34 +1,42 @@
-# DocuMind settings — Module 01.
-# Every value here can be overridden by an environment variable:
-#   DOCUMIND_<SECTION>__<KEY>   e.g.  DOCUMIND_GATEWAY__BASE_URL=http://localhost:4100
-# Secrets (DOCUMIND_API_KEY) never live in this file — only in the environment / .env.
+# DocuMind settings: Module 01. The one file to change how the app behaves.
+# Any value can be overridden with an environment variable:
+#   DOCUMIND_<SECTION>__<KEY>     e.g.  DOCUMIND_FEATURES__SUMMARIZE_ALIAS=smart
+# API keys never go here. They live in the repo's .env file (or Colab Secrets).
 
-runtime: local            # local | colab — changes where keys/paths come from, not the code
-
+# ── The AI gateway (LiteLLM, used as a library) ───────────────────────────────────────
 gateway:
-  base_url: http://localhost:4000   # the LiteLLM proxy. The app never calls vendors directly.
+  # Aliases → real vendor models. The app only ever asks for an alias.
+  # Prices per 1M tokens (in / out), from LiteLLM's price list, checked 2026-11-04:
+  aliases:
+    fast-anthropic: anthropic/claude-haiku-5-5     # $0.10 / $0.50
+    smart-anthropic: anthropic/claude-sonnet-5-5   # $2.00 / $10.00
+    fast-openai: openai/gpt-6-luna                 # $0.10 / $0.50
+    smart-openai: openai/gpt-6.1-sol               # $2.00 / $10.00
+  # Short names the app uses. Point them at another vendor without touching code.
+  shortcuts:
+    fast: fast-anthropic
+    smart: smart-anthropic
+  num_retries: 2            # resilience lives in the gateway, not in feature code
   timeout_seconds: 60
-  # Retries and fallbacks are the gateway's job (see gateway/config.yaml), so the client
-  # does not retry on its own. This keeps one place in charge of resilience.
-  client_max_retries: 0
+  # Spend cap for one session (one notebook run or one CLI run). Calls stop when reached.
+  max_spend_usd: 1.00
+  # Practice mode: set a text here and every call returns it instantly, for free.
+  #   DOCUMIND_GATEWAY__MOCK_RESPONSE="Hello from mock mode"
+  mock_response: null
 
-models:
-  # Aliases defined in the gateway config. The app never names a vendor model.
-  summarize: fast
-
-generation:
-  # Current models "think" before answering, and thinking tokens count toward this limit.
-  # Leave headroom, or the answer can be cut off (finish_reason = "length").
+# ── Features ──────────────────────────────────────────────────────────────────────────
+features:
+  summarize_alias: fast
+  # Current models "think" first, and thinking counts toward this limit. Leave headroom.
   max_output_tokens: 2000
 
 documents:
-  allowed_extensions: [".txt", ".md"]   # PDFs and images arrive in Module 02
-  max_chars: 50000                       # guardrail against accidentally huge (and costly) inputs
+  allowed_extensions: [".txt", ".md"]   # PDFs and photos arrive in Module 02
+  max_chars: 50000                       # guardrail against huge (and costly) inputs
   encoding: utf-8
 
-prompts:
-  directory: prompts                     # relative to the app folder
+prompts_dir: prompts
 
 logging:
   level: INFO
-  format: "%(asctime)s %(levelname)-7s %(name)s — %(message)s"
+  format: "%(asctime)s %(levelname)-7s %(name)s: %(message)s"

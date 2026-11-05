@@ -12,8 +12,6 @@ __pycache__/
 *.egg-info/
 uv.lock.bak
 
-# Gateway runtime
-infra/gateway/.prisma-generated
 *.log
 
 # OS / editors

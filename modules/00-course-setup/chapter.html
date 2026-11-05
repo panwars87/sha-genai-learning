@@ -131,8 +131,8 @@ dl.glossary dd { margin: 0; }
 <header class="prose">
   <span class="eyebrow">DocuMind course · Module 00</span>
   <h1>Course setup</h1>
-  <p class="lede">Over 15 modules you'll build DocuMind, an app that reads invoices and receipts, extracts what matters and answers questions about them. Each module teaches one GenAI concept. This one gets your Mac (or Google Colab) and your accounts ready, so Module 01 just works.</p>
-  <div class="meta"><span>~30 min</span><span>3 checks</span><span>cost: $0</span><span>code: modules/00-course-setup</span></div>
+  <p class="lede">Across 15 modules you'll build DocuMind, an app that reads invoices and receipts, extracts what matters and answers questions about them. Each module teaches one GenAI concept. This one gets your Mac (or Google Colab) and your accounts ready, so Module 01 just works.</p>
+  <div class="meta"><span>~20 min</span><span>1 notebook · 3 checks</span><span>cost: $0</span></div>
   <nav class="toc" aria-label="Sections"><span class="eyebrow">In this chapter</span>
   <ol><li><a href="#s1">How this course works</a></li><li><a href="#s2">Tools</a></li>
   <li><a href="#s3">Keys and accounts</a></li><li><a href="#s4">The documents</a></li><li><a href="#check">Checkpoint</a></li></ol></nav>
@@ -141,69 +141,61 @@ dl.glossary dd { margin: 0; }
 <hr class="cut">
 <section id="s1" class="prose">
   <span class="secnum">SECTION 1</span><h2>How this course works</h2>
-  <p>Every module has the same four steps. You read the chapter (this page), then run the lesson scripts in order. Each lesson prints what it is showing you. Then you break things on purpose, and finally you answer a short quiz before moving on.</p>
+  <p>Every module has the same four steps. You read a section of the chapter (this page), then run the same-numbered section of the module's notebook. Every code cell has a short note before it (what it does) and after it (what you just saw). Each notebook ends with experiments that break things on purpose, and a short quiz.</p>
   <figure><div class="svg-wrap"><svg viewBox="0 0 720 150" role="img" aria-labelledby="r1t"><title id="r1t">The rhythm of every module</title><defs>
 <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead"/></marker>
 <marker id="ah-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead-accent"/></marker>
 <marker id="ah-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead-warn"/></marker>
 </defs>
 <rect class="box-accent" x="10" y="30" width="150" height="56" rx="6"/><text class="t-head" x="24" y="54">1 · Read</text><text class="t-small" x="24" y="74">chapter.html</text>
-<rect class="box" x="195" y="30" width="150" height="56" rx="6"/><text class="t-head" x="209" y="54">2 · Code along</text><text class="t-small" x="209" y="74">lessons/L01…</text>
-<rect class="box-warn" x="380" y="30" width="150" height="56" rx="6"/><text class="t-head" x="394" y="54">3 · Break it</text><text class="t-small" x="394" y="74">experiments/E01…</text>
-<rect class="box" x="565" y="30" width="145" height="56" rx="6"/><text class="t-head" x="579" y="54">4 · Checkpoint</text><text class="t-small" x="579" y="74">README quiz</text>
+<rect class="box" x="195" y="30" width="150" height="56" rx="6"/><text class="t-head" x="209" y="54">2 · Run</text><text class="t-small" x="209" y="74">the notebook</text>
+<rect class="box-warn" x="380" y="30" width="150" height="56" rx="6"/><text class="t-head" x="394" y="54">3 · Break it</text><text class="t-small" x="394" y="74">end of notebook</text>
+<rect class="box" x="565" y="30" width="145" height="56" rx="6"/><text class="t-head" x="579" y="54">4 · Checkpoint</text><text class="t-small" x="579" y="74">five questions</text>
 <line class="line" x1="160" y1="58" x2="192" y2="58" marker-end="url(#ah)"/>
 <line class="line" x1="345" y1="58" x2="377" y2="58" marker-end="url(#ah)"/>
 <line class="line" x1="530" y1="58" x2="562" y2="58" marker-end="url(#ah)"/>
 <path class="line-accent" d="M637 88 V120 H85 V92" stroke-dasharray="5 4" marker-end="url(#ah-a)"/>
 <text class="t-small" x="250" y="140">pass the checkpoint → next module (app/ grows by one feature)</text>
-</svg></div><figcaption>Lesson numbers match chapter sections: section 3 goes with <code>lessons/L03_*.py</code>.</figcaption></figure>
+</svg></div><figcaption>Chapter section 3 goes with notebook section 3. Run the notebook top to bottom; each section builds on the last.</figcaption></figure>
   <h3>Inside a module folder</h3>
   <div class="table-wrap"><table><thead><tr><th>Path</th><th>What it is</th></tr></thead><tbody>
     <tr><td><code>chapter.html</code></td><td>This page</td></tr>
-    <tr><td><code>lessons/</code></td><td>One script per chapter section, each runs on its own</td></tr>
-    <tr><td><code>experiments/</code></td><td>"Break it" scripts</td></tr>
-    <tr><td><code>gateway/config.yaml</code></td><td>The AI gateway's settings as of this module</td></tr>
-    <tr><td><code>app/</code></td><td>The whole DocuMind app as of the end of this module</td></tr>
-    <tr><td><code>colab.ipynb</code></td><td>Runs the module in Google Colab</td></tr>
+    <tr><td><code>NN-name.ipynb</code></td><td>The notebook: one section per chapter section. Runs on your Mac and in Colab.</td></tr>
+    <tr><td><code>app/</code></td><td>The whole DocuMind app as of the end of this module, with its settings in <code>app/config/settings.yaml</code></td></tr>
     <tr><td><code>NOTES.md</code></td><td>Your notes</td></tr>
   </tbody></table></div>
   <h3>The road ahead</h3>
-  <div class="table-wrap"><table><thead><tr><th class="num">#</th><th>Concept</th><th>What DocuMind gains</th></tr></thead><tbody><tr><td class="num">00</td><td>Course setup</td><td>Tools, keys, sample documents</td></tr><tr><td class="num">01</td><td>LLM basics + AI gateway</td><td>Summarize a document through LiteLLM</td></tr><tr><td class="num">02</td><td>Prompt engineering + structured output</td><td>Extract invoice and receipt fields as JSON</td></tr><tr><td class="num">03</td><td>Observability</td><td>Every call traced in Langfuse</td></tr><tr><td class="num">04</td><td>Model routing + fallbacks</td><td>Cheap model for easy documents, smart for hard ones</td></tr><tr><td class="num">05</td><td>Embeddings</td><td>Search by meaning</td></tr><tr><td class="num">06</td><td>Vector DB + chunking</td><td>An ingestion pipeline into pgvector</td></tr><tr><td class="num">07</td><td>RAG</td><td>Ask questions across all documents, with sources</td></tr><tr><td class="num">08</td><td>Context engineering</td><td>Token budgets and prompt caching</td></tr><tr><td class="num">09</td><td>Evals</td><td>A report card that runs on every change</td></tr><tr><td class="num">10</td><td>Semantic cache</td><td>Reuse answers to questions that mean the same thing</td></tr><tr><td class="num">11</td><td>Tool calling + MCP</td><td>A DocuMind MCP server</td></tr><tr><td class="num">12</td><td>LangChain</td><td>Q&A rebuilt with LangChain</td></tr><tr><td class="num">13</td><td>LangGraph</td><td>The upload agent: classify → extract → check → human review</td></tr><tr><td class="num">14</td><td>Capstone</td><td>React UI and cost dashboard</td></tr></tbody></table></div>
+  <div class="table-wrap"><table><thead><tr><th class="num">#</th><th>Concept</th><th>What DocuMind gains</th></tr></thead><tbody><tr><td class="num">00</td><td>Course setup</td><td>Tools, keys, sample documents</td></tr><tr><td class="num">01</td><td>LLM basics + AI gateway</td><td>Summarize a document through LiteLLM</td></tr><tr><td class="num">02</td><td>Prompt engineering + structured output</td><td>Extract invoice and receipt fields as JSON</td></tr><tr><td class="num">03</td><td>Observability</td><td>Every call logged and traced, step by step</td></tr><tr><td class="num">04</td><td>Model routing + fallbacks</td><td>Cheap model for easy documents, smart for hard ones</td></tr><tr><td class="num">05</td><td>Embeddings</td><td>Search by meaning</td></tr><tr><td class="num">06</td><td>Vector DB + chunking</td><td>An ingestion pipeline into a local vector store</td></tr><tr><td class="num">07</td><td>RAG</td><td>Ask questions across all documents, with sources</td></tr><tr><td class="num">08</td><td>Context engineering</td><td>Token budgets and prompt caching</td></tr><tr><td class="num">09</td><td>Evals</td><td>A report card that runs on every change</td></tr><tr><td class="num">10</td><td>Semantic cache</td><td>Reuse answers to questions that mean the same thing</td></tr><tr><td class="num">11</td><td>Tool calling + MCP</td><td>A DocuMind MCP server</td></tr><tr><td class="num">12</td><td>LangChain</td><td>Q&A rebuilt with LangChain</td></tr><tr><td class="num">13</td><td>LangGraph</td><td>The upload agent: classify → extract → check → human review</td></tr><tr><td class="num">14</td><td>Capstone</td><td>React UI and cost dashboard</td></tr></tbody></table></div>
 </section>
 
 <hr class="cut">
 <section id="s2" class="prose">
   <span class="secnum">SECTION 2</span><h2>Tools</h2>
-  <p>You need only four tools, and no Docker. Everything else is either a Python package that uv installs for you, or a free hosted service.</p>
+  <p>You need two tools. There are no servers, no databases and no Docker; everything else is a Python package that uv installs for you.</p>
   <div class="table-wrap"><table><thead><tr><th>Tool</th><th>Why</th><th>Install on Mac</th></tr></thead><tbody>
-    <tr><td>Python 3.12+</td><td>The course language</td><td>uv installs it for you</td></tr>
-    <tr><td><strong>uv</strong></td><td>Installs Python and each module's packages, fast and isolated</td><td><code>brew install uv</code></td></tr>
+    <tr><td><strong>uv</strong></td><td>Installs Python, each module's packages and Jupyter, isolated per module</td><td><code>brew install uv</code></td></tr>
     <tr><td>git</td><td>Gets the course code</td><td><code>xcode-select --install</code></td></tr>
-    <tr><td>make</td><td>Short commands like <code>make gateway MODULE=01</code></td><td>Comes with the Xcode tools</td></tr>
   </tbody></table></div>
-  <p>In Colab you install nothing: the module notebook installs uv in its first cell.</p>
-  <div class="slip"><span class="label">Code along</span><code>lessons/L01_check_tools.py</code><span class="cmd">git clone https://github.com/panwars87/sha-genai-learning.git &amp;&amp; cd sha-genai-learning
-python3 modules/00-course-setup/lessons/L01_check_tools.py</span></div>
+<pre><code>git clone https://github.com/panwars87/sha-genai-learning.git
+cd sha-genai-learning/modules/00-course-setup
+uvx --from jupyterlab jupyter lab          <span class="c"># opens Jupyter; then open 00-course-setup.ipynb</span></code></pre>
+  <p>In Colab you install nothing: open the notebook from GitHub and its first cell downloads the course.</p>
+  <div class="slip"><span class="label">Now run</span><code>00-course-setup.ipynb</code><span class="cmd">Section 2: check Python, uv and git</span></div>
 </section>
 
 <hr class="cut">
 <section id="s3" class="prose">
   <span class="secnum">SECTION 3</span><h2>Keys and accounts</h2>
-  <div class="eli10"><span class="label">Explain like I'm 10</span><p>An API key is a password that also works as a credit card. Whoever holds it can spend your money. So we keep keys in one locked drawer (<code>.env</code>), never in the code, and hand the app only a pocket-money card (Module 01).</p></div>
+  <div class="eli10"><span class="label">Explain like I'm 10</span><p>An API key is a password that also works as a credit card. Whoever holds it can spend your money. So we keep keys in one locked drawer (<code>.env</code>), never in the code, and only one part of DocuMind ever opens that drawer.</p></div>
   <h3>What to create</h3>
   <div class="table-wrap"><table><thead><tr><th>Name in .env</th><th>Where it comes from</th><th>Who reads it</th></tr></thead><tbody>
-    <tr><td><code>ANTHROPIC_API_KEY</code></td><td>console.anthropic.com → API keys</td><td>Gateway only</td></tr>
-    <tr><td><code>OPENAI_API_KEY</code></td><td>platform.openai.com → API keys</td><td>Gateway only</td></tr>
-    <tr><td><code>LITELLM_MASTER_KEY</code></td><td>You invent it (see below); must start with <code>sk-</code></td><td>Gateway + admin lessons</td></tr>
-    <tr><td><code>DATABASE_URL</code></td><td>A free hosted Postgres, for example neon.tech → new project → connection string</td><td>Gateway only</td></tr>
-    <tr><td><code>DOCUMIND_API_KEY</code></td><td>Issued by the gateway in Module 01, lesson L04</td><td>DocuMind</td></tr>
+    <tr><td><code>ANTHROPIC_API_KEY</code></td><td>console.anthropic.com → API keys</td><td>Only the LiteLLM gateway inside DocuMind</td></tr>
+    <tr><td><code>OPENAI_API_KEY</code></td><td>platform.openai.com → API keys</td><td>Only the LiteLLM gateway inside DocuMind</td></tr>
   </tbody></table></div>
-<pre><code>cp .env.example .env                    <span class="c"># then fill in each value</span>
-python3 -c "import secrets; print('sk-admin-' + secrets.token_urlsafe(24))"   <span class="c"># a master key</span></code></pre>
-  <p><strong>Why Postgres before any AI code?</strong> The gateway stores its virtual keys, budgets and spend in a database. Later modules keep documents and vectors there too. A hosted one works the same from your Mac and from Colab. Free tiers change, so check the current terms when you sign up.</p>
-  <p><strong>Spending.</strong> Module 01 costs a few cents. Set a monthly limit in both vendor consoles as well; the gateway budget in Module 01 is a second fence, not the only one.</p>
+<pre><code>cp .env.example .env                    <span class="c"># from the course folder, then paste in both keys</span></code></pre>
+  <p><strong>Spending.</strong> Module 01 costs a few cents. Set a monthly limit in both vendor consoles. DocuMind also caps each session at $1 (Module 01, Section 6), as a second fence.</p>
   <p><strong>In Colab</strong>, use the key icon in the left sidebar (Colab Secrets) instead of <code>.env</code>, with the same names.</p>
-  <div class="slip"><span class="label">Code along</span><code>lessons/L02_check_env_file.py</code><span class="cmd">python3 modules/00-course-setup/lessons/L02_check_env_file.py      # checks names only; never prints a value</span></div>
+  <div class="slip"><span class="label">Now run</span><code>00-course-setup.ipynb</code><span class="cmd">Section 3: check both keys are present (values are never printed)</span></div>
   <div class="director"><span class="label">At enterprise scale</span><ul>
     <li>No personal API keys for company work. Use the organization's approved vendor accounts, which carry the right data-processing and retention terms.</li>
     <li>Secrets come from a secrets manager, not a file on a laptop. A <code>.env</code> file is a development convenience only.</li>
@@ -222,15 +214,15 @@ python3 -c "import secrets; print('sk-admin-' + secrets.token_urlsafe(24))"   <s
     <tr><td><code>receipts/RCPT-3002-handy-hardware.txt</code></td><td>Shop receipt: quantities, a discount, cash and change</td></tr>
   </tbody></table></div>
   <p>Notice how differently they are laid out. A fixed template can't read all four; a model can. That variety is the reason to use an LLM here. Module 01 uses plain text; PDFs and phone photos arrive in Module 02.</p>
-  <div class="slip"><span class="label">Code along</span><code>lessons/L03_tour_sample_data.py</code><span class="cmd">python3 modules/00-course-setup/lessons/L03_tour_sample_data.py</span></div>
+  <div class="slip"><span class="label">Now run</span><code>00-course-setup.ipynb</code><span class="cmd">Section 4: preview the four documents</span></div>
 </section>
 
 <hr class="cut">
 <section id="check" class="prose">
   <span class="secnum">CHECKPOINT</span><h2>Ready for Module 01?</h2>
   <details><summary>Why does .env exist, and why is it in .gitignore?</summary><p>It keeps secrets out of code and out of git. A pushed key counts as leaked.</p></details>
-  <details><summary>Which program reads ANTHROPIC_API_KEY and OPENAI_API_KEY?</summary><p>Only the LiteLLM gateway. DocuMind itself never sees them.</p></details>
-  <details><summary>Why do we need Postgres before writing AI code?</summary><p>The gateway keeps virtual keys, budgets and spend in it.</p></details>
+  <details><summary>Which code reads ANTHROPIC_API_KEY and OPENAI_API_KEY?</summary><p>Only the LiteLLM library inside DocuMind's gateway module. Feature code never touches them.</p></details>
+  <details><summary>Why use made-up documents?</summary><p>Real invoices hold personal and commercial data. Learning never needs it, and in a bank it would break data-handling rules.</p></details>
   <p>All three checks green? Then you're ready.</p>
 </section>
 
